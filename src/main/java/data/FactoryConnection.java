@@ -13,7 +13,7 @@ public class FactoryConnection {
   private String dbType = "postgresql";
 
   private Connection conn;
-  private int cantConn = 0;
+  private int connCount = 0;
 
   private FactoryConnection() throws AppDataException {
     try {
@@ -23,13 +23,13 @@ public class FactoryConnection {
     }
   }
 
-  private static FactoryConnection instancia;
+  private static FactoryConnection instance;
 
-  public static FactoryConnection getInstancia() throws AppDataException {
-    if (instancia == null) {
-      instancia = new FactoryConnection();
+  public static FactoryConnection getInstance() throws AppDataException {
+    if (instance == null) {
+      instance = new FactoryConnection();
     }
-    return instancia;
+    return instance;
   }
 
   public Connection getConn() {
@@ -38,7 +38,7 @@ public class FactoryConnection {
         conn = DriverManager.getConnection(
           "jdbc:" + dbType + "://" + host + ":" + port + "/" + db + "?user=" + user + "&password=" + pass
         );
-        cantConn++;
+        connCount++;
       }
     } catch (SQLException e) {
       new AppDataException(e, "Error al conectar a la DB");
@@ -48,8 +48,8 @@ public class FactoryConnection {
 
   public void releaseConn() throws AppDataException {
     try {
-      cantConn--;
-      if (cantConn == 0) {
+      connCount--;
+      if (connCount == 0) {
         conn.close();
       }
     } catch (SQLException e) {

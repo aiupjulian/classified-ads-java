@@ -1,0 +1,10 @@
+:root {
+  --primary-color: #feee58;
+  --secondary-color: #5697fa;
+  --grey: grey;
+  --header-height: 50px;
+  --footer-height: 165px;
+  --content-min-height: calc(100vh - var(--header-height));
+  --hero-height: 500px;
+  --content-padding-top: 5px;
+}

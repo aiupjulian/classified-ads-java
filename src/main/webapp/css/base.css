@@ -1,0 +1,55 @@
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  font-family: "Roboto", sans-serif;
+  min-height: var(--content-min-height);
+  margin-top: var(--header-height);
+  background-color: #ebebeb;
+}
+
+.button {
+  background-color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  font-weight: bold;
+  color: #fff;
+  border-radius: 4px;
+  padding: 1vh 2vw;
+  cursor: pointer;
+}
+
+.container {
+  padding: var(--content-padding-top) 5vw calc(var(--footer-height) + 5px);
+}
+
+.form-title {
+  display: flex;
+  justify-content: center;
+}
+
+.form {
+  border-radius: 5px;
+  background-color: #fff;
+  width: 25%;
+  padding: 40px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.form > input {
+  margin-bottom: 10px;
+}
+
+.error {
+  font-size: 11px;
+  color: #cc0000;
+  margin-top: 10px;
+}
+
+.required {
+  color: red;
+}

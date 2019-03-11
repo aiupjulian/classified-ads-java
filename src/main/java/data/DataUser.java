@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
 
-import entity.*;
+import entity.User;
 import util.AppDataException;
 
 // -------------------------------------
@@ -27,7 +27,7 @@ public class DataUser implements Serializable {
     String error = "";
 
     try {
-      stmt = FactoryConnection.getInstancia().getConn().prepareStatement(
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
         "SELECT * FROM user WHERE username=?"
       );
       stmt.setString(1, user.getUsername());
@@ -36,7 +36,7 @@ public class DataUser implements Serializable {
         error = "El usuario ya está en uso.";
       } else {
         String hash = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        stmt = FactoryConnection.getInstancia().getConn().prepareStatement(
+        stmt = FactoryConnection.getInstance().getConn().prepareStatement(
           "INSERT INTO user (username, password, name, phone, email) VALUES (?, ?, ?, ?, ?)"
           PreparedStatement.RETURN_GENERATED_KEYS
         );
@@ -72,7 +72,7 @@ public class DataUser implements Serializable {
           rs.close();
         if (stmt != null)
           stmt.close();
-        FactoryConnection.getInstancia().releaseConn();
+        FactoryConnection.getInstance().releaseConn();
       } catch (AppDataException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -89,7 +89,7 @@ public class DataUser implements Serializable {
     ResultSet rs = null;
 
     try {
-      stmt = FactoryConnection.getInstancia().getConn().prepareStatement(
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
         "SELECT * FROM user WHERE id=?"
       );
       stmt.setInt(1, id);
@@ -117,7 +117,7 @@ public class DataUser implements Serializable {
           rs.close();
         if (stmt != null)
           stmt.close();
-        FactoryConnection.getInstancia().releaseConn();
+        FactoryConnection.getInstance().releaseConn();
       } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

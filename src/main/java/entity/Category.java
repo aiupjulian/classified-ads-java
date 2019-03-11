@@ -6,13 +6,15 @@ public class Category implements Serializable {
   private static final long serialVersionUID = 1L;
   private Integer id;
   private String name;
+  private Subcategory[] subcategories;
 
   public Category() {
   }
 
-  public Category(Integer id, String name) {
+  public Category(Integer id, String name, Subcategory[] subcategories) {
     this.setId(id);
     this.setName(name);
+    this.setSubcategories(subcategories);
   }
 
   @Override
@@ -34,5 +36,13 @@ public class Category implements Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Subcategory[] getSubcategories() {
+    return subcategories;
+  }
+
+  public void setSubcategories(Subcategory[] subcategories) {
+    this.subcategories = subcategories;
   }
 }

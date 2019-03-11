@@ -1,0 +1,26 @@
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  height: var(--footer-height);
+}
+
+.footer-sitemap {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid grey;
+  text-align: center;
+}
+
+.admin-contact {
+  text-align: center;
+  flex-basis: 50%;
+}
