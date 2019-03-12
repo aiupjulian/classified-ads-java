@@ -1,9 +1,14 @@
 package util;
 
-public class AppDataException extends Exception {
+public class ApplicationException extends Exception {
   private static final long serialVersionUID = 1L;
   private Throwable innerException;
   private String message;
+
+  public ApplicationException(Throwable e, String message) {
+    this.setInnerException(innerException);
+    this.setMessage(message);
+  }
 
   public Throwable getInnerException() {
     return innerException;
@@ -19,10 +24,5 @@ public class AppDataException extends Exception {
 
   public void setMessage(String message) {
     this.message = message;
-  }
-
-  public AppDataException(Throwable e, String message) {
-    this.setInnerException(innerException);
-    this.setMessage(message);
   }
 }

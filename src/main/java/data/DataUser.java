@@ -5,7 +5,7 @@ import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import entity.User;
-import util.AppDataException;
+import util.ApplicationException;
 
 // -------------------------------------
 // Check that an unencrypted password matches one that has
@@ -63,7 +63,7 @@ public class DataUser implements Serializable {
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    } catch (AppDataException e) {
+    } catch (ApplicationException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     } finally {
@@ -73,7 +73,7 @@ public class DataUser implements Serializable {
         if (stmt != null)
           stmt.close();
         FactoryConnection.getInstance().releaseConn();
-      } catch (AppDataException e) {
+      } catch (ApplicationException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       } catch (SQLException e) {
@@ -108,7 +108,7 @@ public class DataUser implements Serializable {
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    } catch (AppDataException e) {
+    } catch (ApplicationException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     } finally {
@@ -121,7 +121,7 @@ public class DataUser implements Serializable {
       } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
-      } catch (AppDataException e) {
+      } catch (ApplicationException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }

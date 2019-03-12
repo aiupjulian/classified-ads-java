@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.*;
 
 import entity.State;
-import util.AppDataException;
+import util.ApplicationException;
 
 public class DataState implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -33,8 +33,8 @@ public class DataState implements Serializable {
 		} catch (SQLException e) {
 			
 			throw e;
-		} catch (AppDataException ade){
-			throw ade;
+		} catch (ApplicationException ae){
+			throw ae;
 		}
 		
 
@@ -76,7 +76,7 @@ public class DataState implements Serializable {
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    } catch (AppDataException e) {
+    } catch (ApplicationException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     } finally {
@@ -89,7 +89,7 @@ public class DataState implements Serializable {
       } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
-      } catch (AppDataException e) {
+      } catch (ApplicationException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }

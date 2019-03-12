@@ -1,3 +1,5 @@
+<%@page import="entity.Category" %>
+<%@page import="entity.Subcategory" %>
 <jsp:include page="/layout/header.jsp" />
 <jsp:include page="/css/index.css"/>
 <div class="hero-container">
@@ -15,31 +17,22 @@
 </div>
 <div class="categories-list">
   <%
-    if ($categoriesResult = mysqli_query($link, "SELECT * FROM category")) {
-      while($category = mysqli_fetch_array($categoriesResult, MYSQLI_ASSOC)) {
+    Category[] categories = request.setParameter("categories", categories);
+    for (Category category : categories) {
   %>
       <div class="category">
-        <div class="category-title"><% echo $category['name'] %></div>
+        <div class="category-title"><%= category.getName() %></div>
         <%
-          if ($subcategoriesResult = mysqli_query($link, "SELECT * FROM subcategory WHERE subcategory.category_id = " . $category['id'])) {
-            while($subcategory = mysqli_fetch_array($subcategoriesResult, MYSQLI_ASSOC)) {
+          Subcategory[] subcategories = category.getSubcategories()
+          for (Subcategory subcategory : subcategories) {
         %>
               <div class="subcategory">
-                <a href="list.php?subcategory=<% echo $subcategory['id'] %>">
-                  <% echo $subcategory['name'] %>
+                <a href="list.php?subcategory=<%= subcategory.getId() %>">
+                  <%= subcategory.getName() %>
                 </a>
               </div>
-        <%
-            }
-            mysqli_free_result($subcategoriesResult);
-          }
-        %>
+        <% } %>
         </div>
-  <%
-      }
-      mysqli_free_result($categoriesResult);
-    }
-    close($link);
-  %>
+  <% } %>
 </div>
 <jsp:include page="/layout/footer.jsp" />

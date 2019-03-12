@@ -5,6 +5,14 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
+    <servlet-name>Index</servlet-name>
+    <servlet-class>servlet.Index</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Index</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>Login</servlet-name>
     <servlet-class>servlet.Login</servlet-class>
   </servlet>

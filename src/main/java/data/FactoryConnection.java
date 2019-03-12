@@ -1,7 +1,7 @@
 package data;
 
 import java.sql.*;
-import util.AppDataException;
+import util.ApplicationException;
 
 public class FactoryConnection {
   private String dbDriver = "org.postgresql.jdbc.Driver";
@@ -15,17 +15,17 @@ public class FactoryConnection {
   private Connection conn;
   private int connCount = 0;
 
-  private FactoryConnection() throws AppDataException {
+  private FactoryConnection() throws ApplicationException {
     try {
       Class.forName(dbDriver);
     } catch (ClassNotFoundException e) {
-      throw new AppDataException(e, "Error del Driver JDBC");
+      throw new ApplicationException(e, "Error del Driver JDBC");
     }
   }
 
   private static FactoryConnection instance;
 
-  public static FactoryConnection getInstance() throws AppDataException {
+  public static FactoryConnection getInstance() throws ApplicationException {
     if (instance == null) {
       instance = new FactoryConnection();
     }
@@ -41,19 +41,19 @@ public class FactoryConnection {
         connCount++;
       }
     } catch (SQLException e) {
-      new AppDataException(e, "Error al conectar a la DB");
+      new ApplicationException(e, "Error al conectar a la DB");
     }
     return conn;
   }
 
-  public void releaseConn() throws AppDataException {
+  public void releaseConn() throws ApplicationException {
     try {
       connCount--;
       if (connCount == 0) {
         conn.close();
       }
     } catch (SQLException e) {
-      throw new AppDataException(e, "Error al cerrar conexión");
+      throw new ApplicationException(e, "Error al cerrar conexión");
     }
   }
 }
