@@ -1,7 +1,8 @@
+<%@page import="java.util.ArrayList" %>
 <%@page import="entity.Category" %>
 <%@page import="entity.Subcategory" %>
-<jsp:include page="/layout/header.jsp" />
-<jsp:include page="/css/index.css"/>
+<jsp:include page="jsp/layout/header.jsp" />
+<jsp:include page="../css/index.css"/>
 <div class="hero-container">
   <div class="hero"></div>
   <div class="hero-text">
@@ -17,13 +18,13 @@
 </div>
 <div class="categories-list">
   <%
-    Category[] categories = request.setParameter("categories", categories);
+    ArrayList<Category> categories = (ArrayList<Category>)request.getAttribute("categories");
     for (Category category : categories) {
   %>
       <div class="category">
         <div class="category-title"><%= category.getName() %></div>
         <%
-          Subcategory[] subcategories = category.getSubcategories()
+          ArrayList<Subcategory> subcategories = category.getSubcategories();
           for (Subcategory subcategory : subcategories) {
         %>
               <div class="subcategory">
@@ -35,4 +36,4 @@
         </div>
   <% } %>
 </div>
-<jsp:include page="/layout/footer.jsp" />
+<jsp:include page="jsp/layout/footer.jsp" />

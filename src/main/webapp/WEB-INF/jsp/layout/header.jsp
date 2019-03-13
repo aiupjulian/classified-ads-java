@@ -27,7 +27,7 @@
       </form>
       <div class="header-section">
         <a href="list.jsp">Listado</a>
-        <% if (session.getAttribute("username")) { %>
+        <% if (session.getAttribute("username") != null) { %>
           <a href="sell.jsp">Vender</a>
           <a href="profile.jsp">Perfil</a>
           <a href="logout.jsp">Logout</a>

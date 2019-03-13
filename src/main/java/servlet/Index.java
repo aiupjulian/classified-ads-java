@@ -1,14 +1,15 @@
 package servlet;
 
+import java.util.ArrayList;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.RequestDispatcher;
 
-import data.DataCategory;
+import controller.*;
 import entity.*;
+import util.ApplicationException;
 
 public class Index extends HttpServlet {
   private static final long serialVersionUID = 1L;
@@ -19,10 +20,19 @@ public class Index extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    RequestDispatcher dispacher = request.getRequestDispatcher("/WEB-INF/jsp/index.jsp");
-    Category[] categories = DataCategory.getAllWithSubcategories;
-    request.setParameter("categories", categories);
-    dispacher.forward(request, response);
+    CategoryController categoryController = new CategoryController();
+    ArrayList<Category> categories = new ArrayList<Category>();
+    try {
+      categories = categoryController.getAllWithSubcategories();
+    } catch (ApplicationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    request.setAttribute("categories", categories);
+    request.getRequestDispatcher("WEB-INF/index.jsp").forward(request, response);
   }
 
   @Override

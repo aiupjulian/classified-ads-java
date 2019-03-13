@@ -12,8 +12,8 @@ public class CategoryController {
 	public CategoryController() {
 		dataCategory = new DataCategory();
 	}
-	
-	public Category[] getAllWithSubcategories() throws ApplicationException {
+
+	public ArrayList<Category> getAllWithSubcategories() throws Exception, ApplicationException {
 		return dataCategory.getAllWithSubcategories();
 	}
 }

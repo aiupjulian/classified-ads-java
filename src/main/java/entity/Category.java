@@ -1,17 +1,18 @@
 package entity;
 
+import java.util.ArrayList;
 import java.io.Serializable;
 
 public class Category implements Serializable {
   private static final long serialVersionUID = 1L;
   private Integer id;
   private String name;
-  private Subcategory[] subcategories;
+  private ArrayList<Subcategory> subcategories;
 
   public Category() {
   }
 
-  public Category(Integer id, String name, Subcategory[] subcategories) {
+  public Category(Integer id, String name, ArrayList<Subcategory> subcategories) {
     this.setId(id);
     this.setName(name);
     this.setSubcategories(subcategories);
@@ -38,11 +39,11 @@ public class Category implements Serializable {
     this.name = name;
   }
 
-  public Subcategory[] getSubcategories() {
+  public ArrayList<Subcategory> getSubcategories() {
     return subcategories;
   }
 
-  public void setSubcategories(Subcategory[] subcategories) {
+  public void setSubcategories(ArrayList<Subcategory> subcategories) {
     this.subcategories = subcategories;
   }
 }

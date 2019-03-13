@@ -1,9 +1,10 @@
 package data;
 
+import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.*;
 
-import entity.Category;
+import entity.*;
 import util.ApplicationException;
 
 public class DataCategory implements Serializable {
@@ -17,23 +18,23 @@ public class DataCategory implements Serializable {
 		ArrayList<Category> categories = new ArrayList<Category>();
 		try {
       stmt = FactoryConnection.getInstance().getConn().createStatement();
-			rs = stmt.executeQuery("SELECT * FROM category");
+			rs = stmt.executeQuery("SELECT * FROM classified_ads.category");
 			if (rs != null){
 				while(rs.next()){
 					Category category = new Category();
 					category.setId(rs.getInt("id"));
 					category.setName(rs.getString("name"));
-          stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-            "SELECT * FROM subcategory WHERE category_id=?"
+          PreparedStatement substmt = FactoryConnection.getInstance().getConn().prepareStatement(
+            "SELECT * FROM classified_ads.subcategory WHERE category_id=?"
           );
-          stmt.setInt(1, category.getId());
-          rs = stmt.executeQuery();
-          if(rs!=null){
-            Subcategory[] subcategories = null;
-            while(rs.next()){
+          substmt.setInt(1, rs.getInt("id"));
+          ResultSet subrs = substmt.executeQuery();
+          if (subrs != null) {
+            ArrayList<Subcategory> subcategories = new ArrayList<Subcategory>();
+            while (rs.next()) {
               Subcategory subcategory = new Subcategory();
-              subcategory.setId(rs.getInt("id"));
-              subcategory.setName(rs.getString("name"));
+              subcategory.setId(subrs.getInt("id"));
+              subcategory.setName(subrs.getString("name"));
               subcategories.add(subcategory);
             }
             category.setSubcategories(subcategories);
@@ -50,7 +51,7 @@ public class DataCategory implements Serializable {
 		try {
 			if (rs!=null) rs.close();
 			if (stmt!=null) stmt.close();
-			FactoryConexion.getInstancia().releaseConn();
+			FactoryConnection.getInstance().releaseConn();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -59,49 +60,49 @@ public class DataCategory implements Serializable {
 	}
 
 
-  public Category[] getAll() {
-    Category[] categories = new Category[]();
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
+  // public Category[] getAll() {
+  //   Category[] categories = new Category[]();
+  //   PreparedStatement stmt = null;
+  //   ResultSet rs = null;
 
-    try {
-      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-        "SELECT * FROM user WHERE id=?"
-      );
-      stmt.setInt(1, id);
-      rs = stmt.executeQuery();
-      if (rs != null && rs.next()) {
-        user = new User(
-          id,
-          rs.getString("username"),
-          rs.getString("password"),
-          rs.getString("phone"),
-          rs.getString("email"),
-          rs.getString("name"),
-          rs.getBoolean("admin")
-        );
-      }
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (ApplicationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      try {
-        if (rs != null)
-          rs.close();
-        if (stmt != null)
-          stmt.close();
-        FactoryConnection.getInstance().releaseConn();
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (ApplicationException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    return user;
-  }
+  //   try {
+  //     stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+  //       "SELECT * FROM user WHERE id=?"
+  //     );
+  //     stmt.setInt(1, id);
+  //     rs = stmt.executeQuery();
+  //     if (rs != null && rs.next()) {
+  //       user = new User(
+  //         id,
+  //         rs.getString("username"),
+  //         rs.getString("password"),
+  //         rs.getString("phone"),
+  //         rs.getString("email"),
+  //         rs.getString("name"),
+  //         rs.getBoolean("admin")
+  //       );
+  //     }
+  //   } catch (SQLException e) {
+  //     // TODO Auto-generated catch block
+  //     e.printStackTrace();
+  //   } catch (ApplicationException e) {
+  //     // TODO Auto-generated catch block
+  //     e.printStackTrace();
+  //   } finally {
+  //     try {
+  //       if (rs != null)
+  //         rs.close();
+  //       if (stmt != null)
+  //         stmt.close();
+  //       FactoryConnection.getInstance().releaseConn();
+  //     } catch (SQLException e) {
+  //       // TODO Auto-generated catch block
+  //       e.printStackTrace();
+  //     } catch (ApplicationException e) {
+  //       // TODO Auto-generated catch block
+  //       e.printStackTrace();
+  //     }
+  //   }
+  //   return user;
+  // }
 }
