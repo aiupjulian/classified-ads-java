@@ -1,10 +1,10 @@
-/*package data;
+package data;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.*;
 
-import entity.State;
+import entity.*;
 import util.ApplicationException;
 
 public class DataState implements Serializable {
@@ -12,89 +12,50 @@ public class DataState implements Serializable {
 
   public DataState() {}
 
-  public ArrayList<State> getAll() throws Exception {
-		Statement stmt=null;
-		ResultSet rs=null;
-		ArrayList<State> pers= new ArrayList<State>();
+  public ArrayList<State> getAllWithCities() throws Exception {
+		Statement stmt = null;
+		ResultSet rs = null;
+		ArrayList<State> states = new ArrayList<State>();
 		try {
-			stmt = FactoryConexion.getInstancia()
-					.getConn().createStatement();
-			rs = stmt.executeQuery("select * from persona");
-			if(rs!=null){
+      stmt = FactoryConnection.getInstance().getConn().createStatement();
+			rs = stmt.executeQuery("SELECT * FROM classified_ads.state");
+			if (rs != null){
 				while(rs.next()){
-					Persona p=new Persona();
-					p.setId(rs.getInt("id"));
-					p.setNombre(rs.getString("nombre"));
-					p.setApellido(rs.getString("apellido"));
-					p.setDni(rs.getString("dni"));
-					p.setHabilitado(rs.getBoolean("habilitado"));
-					pers.add(p);
+					State state = new State();
+					state.setId(rs.getInt("id"));
+					state.setName(rs.getString("name"));
+          PreparedStatement substmt = FactoryConnection.getInstance().getConn().prepareStatement(
+            "SELECT * FROM classified_ads.cities WHERE state_id=?"
+          );
+          substmt.setInt(1, rs.getInt("id"));
+          ResultSet subrs = substmt.executeQuery();
+          if (subrs != null) {
+            ArrayList<City> cities = new ArrayList<City>();
+            while (rs.next()) {
+              City city = new City();
+              city.setId(subrs.getInt("id"));
+              city.setName(subrs.getString("name"));
+              cities.add(city);
+            }
+            state.setCities(cities);
+          }
+					states.add(state);
 				}
 			}
 		} catch (SQLException e) {
-			
 			throw e;
 		} catch (ApplicationException ae){
 			throw ae;
 		}
-		
 
 		try {
-			if(rs!=null) rs.close();
-			if(stmt!=null) stmt.close();
-			FactoryConexion.getInstancia().releaseConn();
+			if (rs!=null) rs.close();
+			if (stmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return pers;
-		
+
+		return states;
 	}
-
-
-  // public State[] getAll() {
-  //   State[] states = new State[]();
-  //   PreparedStatement stmt = null;
-  //   ResultSet rs = null;
-
-  //   try {
-  //     stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-  //       "SELECT * FROM user WHERE id=?"
-  //     );
-  //     stmt.setInt(1, id);
-  //     rs = stmt.executeQuery();
-  //     if (rs != null && rs.next()) {
-  //       user = new User(
-  //         id,
-  //         rs.getString("username"),
-  //         rs.getString("password"),
-  //         rs.getString("phone"),
-  //         rs.getString("email"),
-  //         rs.getString("name"),
-  //         rs.getBoolean("admin")
-  //       );
-  //     }
-  //   } catch (SQLException e) {
-  //     // TODO Auto-generated catch block
-  //     e.printStackTrace();
-  //   } catch (ApplicationException e) {
-  //     // TODO Auto-generated catch block
-  //     e.printStackTrace();
-  //   } finally {
-  //     try {
-  //       if (rs != null)
-  //         rs.close();
-  //       if (stmt != null)
-  //         stmt.close();
-  //       FactoryConnection.getInstance().releaseConn();
-  //     } catch (SQLException e) {
-  //       // TODO Auto-generated catch block
-  //       e.printStackTrace();
-  //     } catch (ApplicationException e) {
-  //       // TODO Auto-generated catch block
-  //       e.printStackTrace();
-  //     }
-  //   }
-  //   return user;
-  // }
-}*/
+}

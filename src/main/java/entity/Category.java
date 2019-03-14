@@ -9,8 +9,7 @@ public class Category implements Serializable {
   private String name;
   private ArrayList<Subcategory> subcategories;
 
-  public Category() {
-  }
+  public Category() {}
 
   public Category(Integer id, String name, ArrayList<Subcategory> subcategories) {
     this.setId(id);

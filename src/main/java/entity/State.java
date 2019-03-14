@@ -1,18 +1,20 @@
 package entity;
 
+import java.util.ArrayList;
 import java.io.Serializable;
 
 public class State implements Serializable {
   private static final long serialVersionUID = 1L;
   private Integer id;
   private String name;
+  private ArrayList<City> cities;
 
-  public State() {
-  }
+  public State() {}
 
-  public State(Integer id, String name) {
+  public State(Integer id, String name, ArrayList<City> cities) {
     this.setId(id);
     this.setName(name);
+    this.setCities(cities);
   }
 
   @Override
@@ -34,5 +36,13 @@ public class State implements Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public ArrayList<City> getCities() {
+    return cities;
+  }
+
+  public void setCities(ArrayList<City> cities) {
+    this.cities = cities;
   }
 }
