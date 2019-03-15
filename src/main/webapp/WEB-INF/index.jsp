@@ -15,7 +15,7 @@
 </div>
 <div class="categories-title">
   <h3>Categorías</h3>
-  <a href="/list.php">Ver todas</a>
+  <a href="/list.jsp">Ver todas</a>
 </div>
 <div class="categories-list">
   <%
@@ -29,7 +29,7 @@
           for (Subcategory subcategory : subcategories) {
         %>
               <div class="subcategory">
-                <a href="list.php?subcategory=<%= subcategory.getId() %>">
+                <a href="list.jsp?subcategory=<%= subcategory.getId() %>">
                   <%= subcategory.getName() %>
                 </a>
               </div>
