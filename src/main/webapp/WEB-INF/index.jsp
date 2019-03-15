@@ -1,8 +1,9 @@
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@page import="java.util.ArrayList" %>
 <%@page import="entity.Category" %>
 <%@page import="entity.Subcategory" %>
-<jsp:include page="jsp/layout/header.jsp" />
-<jsp:include page="../css/index.css"/>
+<jsp:include page="./jsp/layout/header.jsp" />
+<style><%@ include file="../css/index.css" %></style>
 <div class="hero-container">
   <div class="hero"></div>
   <div class="hero-text">
@@ -36,4 +37,4 @@
         </div>
   <% } %>
 </div>
-<jsp:include page="jsp/layout/footer.jsp" />
+<jsp:include page="./jsp/layout/footer.jsp" />

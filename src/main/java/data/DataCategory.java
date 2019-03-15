@@ -15,6 +15,8 @@ public class DataCategory implements Serializable {
   public ArrayList<Category> getAllWithSubcategories() throws Exception {
 		Statement stmt = null;
 		ResultSet rs = null;
+		PreparedStatement substmt = null;
+		ResultSet subrs = null;
 		ArrayList<Category> categories = new ArrayList<Category>();
 		try {
       stmt = FactoryConnection.getInstance().getConn().createStatement();
@@ -24,14 +26,14 @@ public class DataCategory implements Serializable {
 					Category category = new Category();
 					category.setId(rs.getInt("id"));
 					category.setName(rs.getString("name"));
-          PreparedStatement substmt = FactoryConnection.getInstance().getConn().prepareStatement(
+          substmt = FactoryConnection.getInstance().getConn().prepareStatement(
             "SELECT * FROM classified_ads.subcategory WHERE category_id=?"
           );
           substmt.setInt(1, rs.getInt("id"));
-          ResultSet subrs = substmt.executeQuery();
+          subrs = substmt.executeQuery();
           if (subrs != null) {
             ArrayList<Subcategory> subcategories = new ArrayList<Subcategory>();
-            while (rs.next()) {
+            while (subrs.next()) {
               Subcategory subcategory = new Subcategory();
               subcategory.setId(subrs.getInt("id"));
               subcategory.setName(subrs.getString("name"));
@@ -51,6 +53,9 @@ public class DataCategory implements Serializable {
 		try {
 			if (rs!=null) rs.close();
 			if (stmt!=null) stmt.close();
+			if (subrs!=null) rs.close();
+			if (substmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
 			FactoryConnection.getInstance().releaseConn();
 		} catch (SQLException e) {
 			e.printStackTrace();

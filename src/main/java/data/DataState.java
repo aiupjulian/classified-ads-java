@@ -31,7 +31,7 @@ public class DataState implements Serializable {
           ResultSet subrs = substmt.executeQuery();
           if (subrs != null) {
             ArrayList<City> cities = new ArrayList<City>();
-            while (rs.next()) {
+            while (subrs.next()) {
               City city = new City();
               city.setId(subrs.getInt("id"));
               city.setName(subrs.getString("name"));

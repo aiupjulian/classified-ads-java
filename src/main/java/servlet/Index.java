@@ -2,7 +2,9 @@ package servlet;
 
 import java.util.ArrayList;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,7 @@ import controller.*;
 import entity.*;
 import util.ApplicationException;
 
+@WebServlet(urlPatterns = {"/index", "/index.html", "/index.jsp"})
 public class Index extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -24,6 +27,8 @@ public class Index extends HttpServlet {
     ArrayList<Category> categories = new ArrayList<Category>();
     try {
       categories = categoryController.getAllWithSubcategories();
+      request.setAttribute("categories", categories);
+      request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     } catch (ApplicationException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -31,8 +36,6 @@ public class Index extends HttpServlet {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    request.setAttribute("categories", categories);
-    request.getRequestDispatcher("WEB-INF/index.jsp").forward(request, response);
   }
 
   @Override
