@@ -13,7 +13,7 @@ import controller.*;
 import entity.*;
 import util.ApplicationException;
 
-@WebServlet(urlPatterns = {"/index", "/index.html", "/index.jsp"})
+@WebServlet(urlPatterns = {"/index", "/index.jsp"})
 public class Index extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
