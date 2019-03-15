@@ -30,10 +30,8 @@ public class Index extends HttpServlet {
       request.setAttribute("categories", categories);
       request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     } catch (ApplicationException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

@@ -8,19 +8,44 @@ import org.mindrot.jbcrypt.BCrypt;
 import entity.User;
 import util.ApplicationException;
 
-// -------------------------------------
-// Check that an unencrypted password matches one that has
-// previously been hashed
-// if (BCrypt.checkpw(candidate, hashed))
-// 	System.out.println("It matches");
-// else
-// 	System.out.println("It does not match");
-// ---------------------------------------
-
 public class DataUser implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public DataUser() {}
+
+  public User getByUsername(String username) throws Exception {
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    User user = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("SELECT * FROM classified_ads.user WHERE username=?");
+      stmt.setString(1, username);
+      rs = stmt.executeQuery();
+      if (rs != null && rs.next()){
+        user = new User();
+        user.setId(rs.getInt("id"));
+        user.setUsername(rs.getString("username"));
+        user.setPassword(rs.getString("password"));
+        user.setPhone(rs.getString("phone"));
+        user.setEmail(rs.getString("email"));
+        user.setName(rs.getString("name"));
+        user.setAdmin(rs.getBoolean("admin"));
+      }
+    } catch (SQLException e) {
+      throw e;
+    } catch (ApplicationException ae){
+      throw ae;
+    } finally {
+      try {
+        if (rs!=null) rs.close();
+        if (stmt!=null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return user;
+  }
 
 //   public void add(User user) {
 //     ResultSet rs = null;
@@ -83,50 +108,4 @@ public class DataUser implements Serializable {
 //       }
 //     }
 //   }
-
-  public User getById(Integer id) {
-    User user = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-
-    try {
-      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-        "SELECT * FROM user WHERE id=?"
-      );
-      stmt.setInt(1, id);
-      rs = stmt.executeQuery();
-      if (rs != null && rs.next()) {
-        user = new User(
-          id,
-          rs.getString("username"),
-          rs.getString("password"),
-          rs.getString("phone"),
-          rs.getString("email"),
-          rs.getString("name"),
-          rs.getBoolean("admin")
-        );
-      }
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (ApplicationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      try {
-        if (rs != null)
-          rs.close();
-        if (stmt != null)
-          stmt.close();
-        FactoryConnection.getInstance().releaseConn();
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (ApplicationException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    return user;
-  }
 }

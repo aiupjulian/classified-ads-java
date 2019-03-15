@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.RequestDispatcher;
+
+import controller.*;
+import entity.*;
+import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/login", "/login.jsp"})
 public class Login extends HttpServlet {
@@ -41,27 +44,21 @@ public class Login extends HttpServlet {
       request.setAttribute("error", error);
       request.getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
     } else {
-
+      UserController userController = new UserController();
+      try {
+        User user = userController.validateUser(username, password);
+        if (user != null) {
+          request.getSession().setAttribute("user", user);
+          request.getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
+        } else {
+          request.setAttribute("error", "Usuario o contraseña inválidos.");
+          request.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+        }
+      } catch (ApplicationException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 }
-
-
-// <%
-// if (!isset($error)) {
-//   $query = "SELECT * FROM user WHERE username='$username'";
-//   $userResult = mysqli_query($link, $query);
-//   $user = mysqli_fetch_array($userResult, MYSQLI_ASSOC);
-//   $count = mysqli_num_rows($userResult);
-
-//   if ($count == 1 && password_verify($password, $user["password"])) {
-//     $_SESSION['username'] = $username;
-//     $_SESSION['id'] = $user["id"];
-//     $_SESSION['admin'] = $user["admin"] === "1";
-//     $_SESSION['email'] = $user["email"];
-//     header("location: profile.php");
-//   } else {
-//     $error = "Usuario o contraseña inválidos.";
-//   }
-// }
-// %>
