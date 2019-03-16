@@ -24,9 +24,9 @@ public class Login extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
     if (session != null && session.getAttribute("username") != null) {
-      request.getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
+      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
     } else {
-      request.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+      request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
     }
   }
 
@@ -42,17 +42,17 @@ public class Login extends HttpServlet {
     }
     if (error != "") {
       request.setAttribute("error", error);
-      request.getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
+      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
     } else {
       UserController userController = new UserController();
       try {
         User user = userController.validateUser(username, password);
         if (user != null) {
           request.getSession().setAttribute("user", user);
-          request.getRequestDispatcher("/WEB-INF/profile.jsp").forward(request, response);
+          request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
         } else {
           request.setAttribute("error", "Usuario o contraseña inválidos.");
-          request.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+          request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
         }
       } catch (ApplicationException e) {
         e.printStackTrace();

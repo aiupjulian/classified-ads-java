@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<jsp:include page="./jsp/layout/header.jsp" />
+<jsp:include page="./layout/header.jsp" />
 <h2 class="form-title">Login</h2>
 <form action="" method="post" class="form">
   <label for="username">Usuario:<span class="required"> (*)</span></label>
@@ -11,4 +11,4 @@
     <div class="error"><%= request.getAttribute("error") %></div>
   <% } %>
 </form>
-<jsp:include page="./jsp/layout/footer.jsp" />
+<jsp:include page="./layout/footer.jsp" />
