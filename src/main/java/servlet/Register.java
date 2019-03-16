@@ -35,12 +35,11 @@ public class Register extends HttpServlet {
     String error = "";
     String username = request.getParameter("username");
     String password = request.getParameter("password");
-    if (username == null) {
-      error = "Por favor ingrese su usuario.";
-    } else if (password == null) {
-      error = "Por favor ingrese su contraseña.";
-    }
-    if (error != "") {
+    String name = request.getParameter("name");
+    String phone = request.getParameter("phone");
+    String email = request.getParameter("email");
+    if (username == "" || password == "" || name == "" || phone == "" || email == "") {
+      error = "Por favor complete todos los campos requeridos.";
       request.setAttribute("error", error);
       request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
     } else {
@@ -63,38 +62,21 @@ public class Register extends HttpServlet {
   }
 }
 
+// $query = "SELECT * FROM user WHERE username='$username'";
+// $userResult = mysqli_query($link, $query);
 
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//   $username = mysqli_real_escape_string($link, $_POST['username']);
-//   $password = mysqli_real_escape_string($link, $_POST['password']);
-//   $name = mysqli_real_escape_string($link, $_POST['name']);
-//   $phone = mysqli_real_escape_string($link, $_POST['phone']);
-//   $email = mysqli_real_escape_string($link, $_POST['email']);
-//   $hash = password_hash($password, PASSWORD_BCRYPT);
-  
-//   if ($username=='' || $password=='' || $name=='' || $phone=='' || $email=='') {
-//     $error = 'Por favor complete todos los campos requeridos.';
-//   }
-//   if (!isset($error)) {
-//     $query = "SELECT * FROM user WHERE username='$username'";
-//     $userResult = mysqli_query($link, $query);
+// $count = mysqli_num_rows($userResult);
 
-//     $count = mysqli_num_rows($userResult);
-
-//     if ($count == 1) {
-//       $error = "El usuario ya está en uso.";
-//     } else {
-//       $query = "INSERT INTO user (username, password, name, phone, email) VALUES ('$username', '$hash', '$name', '$phone', '$email')";
-//       if (mysqli_query($link, $query)) {
-//         $_SESSION['username'] = $username;
-//         $_SESSION['id'] = mysqli_insert_id($link);
-//         $_SESSION['email'] = $email;
-//         header("location: profile.php");
-//       } else {
-//         $error = "Hubo un error al intentar crear el usuario.";
-//       }
-//     }
-//     close($link);
+// if ($count == 1) {
+//   $error = "El usuario ya está en uso.";
+// } else {
+//   $query = "INSERT INTO user (username, password, name, phone, email) VALUES ('$username', '$hash', '$name', '$phone', '$email')";
+//   if (mysqli_query($link, $query)) {
+//     $_SESSION['username'] = $username;
+//     $_SESSION['id'] = mysqli_insert_id($link);
+//     $_SESSION['email'] = $email;
+//     header("location: profile.php");
+//   } else {
+//     $error = "Hubo un error al intentar crear el usuario.";
 //   }
 // }
-// ?>

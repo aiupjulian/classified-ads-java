@@ -20,4 +20,9 @@ public class UserController {
 			return null;
 		}
 	}
+
+	public User registerUser(User user) throws Exception, ApplicationException {
+		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+		user = dataUser.add();
+	}
 }
