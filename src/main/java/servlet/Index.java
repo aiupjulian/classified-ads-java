@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
-
 @WebServlet(urlPatterns = {"/index", "/index.jsp"})
 public class Index extends HttpServlet {
   private static final long serialVersionUID = 1L;
@@ -28,12 +26,9 @@ public class Index extends HttpServlet {
     try {
       categories = categoryController.getAllWithSubcategories();
       request.setAttribute("categories", categories);
-      throw new ApplicationException(null, "Test para ver error");
       request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
-    } catch (ApplicationException e) {
-      e.printStackTrace();
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ServletException(e.getMessage());
     }
   }
 
