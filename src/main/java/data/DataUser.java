@@ -47,7 +47,7 @@ public class DataUser implements Serializable {
     return user;
   }
 
-  public User add(User user) {
+  public User add(User user) throws ApplicationException {
     ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
@@ -61,26 +61,22 @@ public class DataUser implements Serializable {
         stmt.setString(4, user.getPhone());
         stmt.setString(5, user.getEmail());
         stmt.execute();
-        // after executing the insert use the following lines to retrieve the id
         rs = stmt.getGeneratedKeys();
         if (rs != null && rs.next()) {
           user.setId(rs.getInt(1));
           return user;
+        } else {
+          throw new ApplicationException(new Throwable(), "El usuario ya está en uso.??????");
         }
       }
-// $error = "Hubo un error al intentar crear el usuario.";
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new ApplicationException(e, "Hubo un error al intentar crear el usuario.");
     } catch (ApplicationException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } finally {
       try {
-        if (rs != null)
-          rs.close();
-        if (stmt != null)
-          stmt.close();
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
       } catch (ApplicationException e) {
         e.printStackTrace();

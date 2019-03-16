@@ -23,6 +23,6 @@ public class UserController {
 
 	public User registerUser(User user) throws Exception, ApplicationException {
 		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-		user = dataUser.add();
+		return dataUser.add(user);
 	}
 }

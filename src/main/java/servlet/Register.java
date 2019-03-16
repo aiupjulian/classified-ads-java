@@ -41,17 +41,23 @@ public class Register extends HttpServlet {
     if (username == "" || password == "" || name == "" || phone == "" || email == "") {
       error = "Por favor complete todos los campos requeridos.";
       request.setAttribute("error", error);
-      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+      request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
     } else {
       UserController userController = new UserController();
       try {
-        User user = userController.validateUser(username, password);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setName(name);
+        user.setPhone(phone);
+        user.setEmail(email);
+        user = userController.registerUser(user);
         if (user != null) {
           request.getSession().setAttribute("user", user);
           request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
         } else {
-          request.setAttribute("error", "Usuario o contraseña inválidos.");
-          request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+          request.setAttribute("error", "El usuario ya está en uso.");
+          request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }
       } catch (ApplicationException e) {
         e.printStackTrace();
@@ -61,22 +67,3 @@ public class Register extends HttpServlet {
     }
   }
 }
-
-// $query = "SELECT * FROM user WHERE username='$username'";
-// $userResult = mysqli_query($link, $query);
-
-// $count = mysqli_num_rows($userResult);
-
-// if ($count == 1) {
-//   $error = "El usuario ya está en uso.";
-// } else {
-//   $query = "INSERT INTO user (username, password, name, phone, email) VALUES ('$username', '$hash', '$name', '$phone', '$email')";
-//   if (mysqli_query($link, $query)) {
-//     $_SESSION['username'] = $username;
-//     $_SESSION['id'] = mysqli_insert_id($link);
-//     $_SESSION['email'] = $email;
-//     header("location: profile.php");
-//   } else {
-//     $error = "Hubo un error al intentar crear el usuario.";
-//   }
-// }
