@@ -28,6 +28,7 @@ public class Index extends HttpServlet {
     try {
       categories = categoryController.getAllWithSubcategories();
       request.setAttribute("categories", categories);
+      throw new ApplicationException(null, "Test para ver error");
       request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     } catch (ApplicationException e) {
       e.printStackTrace();
