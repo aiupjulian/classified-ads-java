@@ -1,4 +1,5 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@page import="entity.User" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -28,7 +29,10 @@
       </form>
       <div class="header-section">
         <a href="list.jsp">Listado</a>
-        <% if (session.getAttribute("username") != null) { %>
+        <%
+          User user = (User)session.getAttribute("user");
+          if (user != null) {
+        %>
           <a href="sell.jsp">Vender</a>
           <a href="profile.jsp">Perfil</a>
           <a href="logout.jsp">Logout</a>
