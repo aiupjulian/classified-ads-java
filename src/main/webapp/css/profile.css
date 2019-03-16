@@ -1,0 +1,59 @@
+.ads-container {
+  background-color: #fff;
+  border-radius: 5px;
+  width: 50%;
+  padding: 40px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ads-list > li {
+  width: 100%;
+  list-style: none;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.ads-list > li > a > div > img {
+  height: 100px;
+}
+
+.ads-list > li > a {
+  width: 65%;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 5px;
+  background-color: #ebebeb;
+  text-decoration: none;
+}
+
+.ads-list > li > a > div {
+  flex-basis: 50%;
+  color: black;
+  display: flex;
+  justify-content: center;
+}
+
+.ad-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.actions {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.actions > a {
+  text-decoration: none;
+  margin: 1px;
+  text-align: center;
+}

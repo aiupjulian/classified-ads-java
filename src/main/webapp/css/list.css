@@ -1,0 +1,83 @@
+.list-container {
+  display: flex;
+}
+
+.filters {
+  background-color: #fff;
+  border-radius: 5px;
+  width: 20%;
+  padding: 40px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.filters > * {
+  margin-bottom: 10px;
+}
+
+.ads-container {
+  background-color: #fff;
+  border-radius: 5px;
+  width: 60%;
+  padding: 40px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ads-list > li {
+  width: 100%;
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+.ads-list > li > a {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  background-color: #ebebeb;
+}
+
+.ads-list > li > a > div > img {
+  height: 100px;
+}
+
+.ads-list > li > a > div {
+  flex-basis: 50%;
+  color: black;
+  display: flex;
+  justify-content: center;
+}
+
+.ad-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ads-pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.ads-pagination > * {
+  margin-right: 10px;
+}
+
+.ad-delete-admin {
+  text-align: right;
+}
+
+.ad-delete-admin > a {
+  color: red;
+}
+
+.ad-delete-admin > a:hover {
+  background-color: unset;
+}
