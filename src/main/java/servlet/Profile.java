@@ -12,11 +12,11 @@ import controller.*;
 import entity.*;
 import util.ApplicationException;
 
-@WebServlet(urlPatterns = {"/login", "/login.jsp"})
-public class Login extends HttpServlet {
+@WebServlet(urlPatterns = {"/profile", "/profile.jsp"})
+public class Profile extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Login() {
+  public Profile() {
     super();
   }
 
@@ -24,9 +24,9 @@ public class Login extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
     if (session != null && session.getAttribute("user") != null) {
-      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
-    } else {
       request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+    } else {
+      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
     }
   }
 
