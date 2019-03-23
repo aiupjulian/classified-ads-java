@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +25,15 @@ public class Profile extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
     if (session != null && session.getAttribute("user") != null) {
-      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+      try {
+        AdController adController = new AdController();
+        ArrayList<Ad> ads = new ArrayList<Ad>();
+        ads = adController.getAllByUser(((User)session.getAttribute("user")).getId());
+        request.setAttribute("ads", ads);
+        request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     } else {
       response.sendRedirect("/login.jsp");
     }

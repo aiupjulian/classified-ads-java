@@ -12,7 +12,9 @@ public class Ad implements Serializable {
   private String date;
   private User user;
   private String image;
+  private Category category;
   private Subcategory subcategory;
+  private State state;
   private City city;
 
   public Ad() {
@@ -27,7 +29,9 @@ public class Ad implements Serializable {
     this.setDate(date);
     this.setUser(user);
     this.setImage(image);
+    this.setCategory(category);
     this.setSubcategory(subcategory);
+    this.setState(state);
     this.setCity(city);
   }
 
@@ -100,12 +104,28 @@ public class Ad implements Serializable {
     this.image = image;
   }
 
+  public Category getCategory() {
+    return category;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
+  }
+
   public Subcategory getSubcategory() {
     return subcategory;
   }
 
   public void setSubcategory(Subcategory subcategory) {
     this.subcategory = subcategory;
+  }
+
+  public State getState() {
+    return state;
+  }
+
+  public void setState(State state) {
+    this.state = state;
   }
 
   public City getCity() {
