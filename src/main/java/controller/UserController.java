@@ -14,7 +14,7 @@ public class UserController {
 
 	public User validateUser(String username, String password) throws Exception, ApplicationException {
 		User user = dataUser.getByUsername(username);
-		if (BCrypt.checkpw(password, user.getPassword())) {
+		if (user != null && BCrypt.checkpw(password, user.getPassword())) {
 			return user;
 		} else {
 			return null;

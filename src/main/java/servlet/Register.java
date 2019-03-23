@@ -24,7 +24,7 @@ public class Register extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
     if (session != null && session.getAttribute("user") != null) {
-      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+      response.sendRedirect("/profile.jsp");
     } else {
       request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
     }
@@ -54,7 +54,7 @@ public class Register extends HttpServlet {
         user = userController.registerUser(user);
         if (user != null) {
           request.getSession().setAttribute("user", user);
-          request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+          response.sendRedirect("/profile.jsp");
         } else {
           request.setAttribute("error", "El usuario ya está en uso.");
           request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);

@@ -12,26 +12,23 @@ import controller.*;
 import entity.*;
 import util.ApplicationException;
 
-@WebServlet(urlPatterns = {"/profile", "/profile.jsp"})
-public class Profile extends HttpServlet {
+@WebServlet(urlPatterns = {"/logout", "/logout.jsp"})
+public class Logout extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Profile() {
+  public Logout() {
     super();
   }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
-    if (session != null && session.getAttribute("user") != null) {
-      request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
-    } else {
-      response.sendRedirect("/login.jsp");
-    }
+    if (session != null) session.invalidate();
+    response.sendRedirect("/index.jsp");
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    // TODO
+    super.doPost(request, response);
   }
 }
