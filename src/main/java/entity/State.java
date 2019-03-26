@@ -11,10 +11,9 @@ public class State implements Serializable {
 
   public State() {}
 
-  public State(Integer id, String name, ArrayList<City> cities) {
+  public State(Integer id, String name) {
     this.setId(id);
     this.setName(name);
-    this.setCities(cities);
   }
 
   @Override

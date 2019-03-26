@@ -8,8 +8,7 @@ public class Subcategory implements Serializable {
   private String name;
   private Category category;
 
-  public Subcategory() {
-  }
+  public Subcategory() {}
 
   public Subcategory(Integer id, String name, Category category) {
     this.setId(id);

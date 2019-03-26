@@ -3,6 +3,7 @@ package data;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.*;
+import com.uploadcare.api.Client;
 
 import entity.*;
 import util.ApplicationException;
@@ -33,36 +34,23 @@ public class DataAd implements Serializable {
       rs = stmt.executeQuery();
 			if (rs != null) {
 				while(rs.next()){
-          ResultSetMetaData rsmd = rs.getMetaData();
-          System.out.println("querying SELECT * FROM XXX");
-          int columnsNumber = rsmd.getColumnCount();
-          while (rs.next()) {
-              for (int i = 1; i <= columnsNumber; i++) {
-                  if (i > 1) System.out.print(",  ");
-                  String columnValue = rs.getString(i);
-                  System.out.print(columnValue + " " + rsmd.getColumnName(i));
-              }
-              System.out.println("");
-          }
-					// Ad ad = new Ad();
-          // ad.setId(rs.getInt("id"));
-          // ad.setName(rs.getString("name"));
-          // ad.setDescription(rs.getString("name"));
-          // ad.setPrice(rs.getInt("name"));
-          // ad.setSold(rs.getBoolean("name"));
-          // ad.setDate(rs.getString("name"));
-          // ad.setImage(rs.getString("name"));
-          // User user = new User(rs.getInt(userid, username, password, phone, email, name, admin);
-          // ad.setUser(user);
-          // Category category = new Category();
-          // ad.setCategory(category);
-          // Subcategory subcategory = new Subcategory();
-          // ad.setSubcategory(subcategory);
-          // State state = new State();
-          // ad.setState(state);
-          // City city = new City();
-          // ad.setCity(city);
-					// ads.add(ad);
+					Ad ad = new Ad();
+          ad.setId(rs.getInt(1));
+          ad.setName(rs.getString(2));
+          ad.setDescription(rs.getString(3));
+          ad.setPrice(rs.getInt(4));
+          ad.setSold(rs.getBoolean(5));
+          ad.setDate(rs.getString(6));
+          ad.setImage(rs.getString(8));
+          User user = new User(rs.getInt(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getBoolean(17));
+          ad.setUser(user);
+          Category category = new Category(rs.getInt(21), rs.getString(22));
+          Subcategory subcategory = new Subcategory(rs.getInt(18), rs.getString(19), category);
+          ad.setSubcategory(subcategory);
+          State state = new State(rs.getInt(26), rs.getString(27));
+          City city = new City(rs.getInt(23), rs.getString(24), state);
+          ad.setCity(city);
+					ads.add(ad);
 				}
 			}
 		} catch (SQLException e) {

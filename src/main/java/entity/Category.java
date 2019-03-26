@@ -11,10 +11,9 @@ public class Category implements Serializable {
 
   public Category() {}
 
-  public Category(Integer id, String name, ArrayList<Subcategory> subcategories) {
+  public Category(Integer id, String name) {
     this.setId(id);
     this.setName(name);
-    this.setSubcategories(subcategories);
   }
 
   @Override
