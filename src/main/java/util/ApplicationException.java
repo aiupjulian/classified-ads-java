@@ -5,6 +5,11 @@ public class ApplicationException extends Exception {
   private Throwable innerException;
   private String message;
 
+  public ApplicationException(String message) {
+    super();
+    this.setMessage(message);
+  }
+
   public ApplicationException(Throwable e, String message) {
     this.setInnerException(innerException);
     this.setMessage(message);

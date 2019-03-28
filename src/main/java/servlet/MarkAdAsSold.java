@@ -13,11 +13,11 @@ import javax.servlet.http.HttpSession;
 import controller.*;
 import entity.*;
 import util.ApplicationException;
-@WebServlet(urlPatterns = {"/deleteAd", "/deleteAd.jsp"})
-public class DeleteAd extends HttpServlet {
+@WebServlet(urlPatterns = {"/markAdAsSold", "/markAdAsSold.jsp"})
+public class MarkAdAsSold extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public DeleteAd() {
+  public MarkAdAsSold() {
     super();
   }
 
@@ -27,9 +27,10 @@ public class DeleteAd extends HttpServlet {
     String stringAdId = request.getParameter("id");
     if (session != null && session.getAttribute("user") != null && stringAdId != null) {
       Integer adId = Integer.parseInt(stringAdId);
+      Integer userId = ((User)session.getAttribute("user")).getId();
       AdController adController = new AdController();
       try {
-        adController.delete(adId, (User)session.getAttribute("user"));
+        adController.markAdAsSold(adId, userId);
         response.sendRedirect("/profile.jsp");
       } catch (SQLException e) {
         throw new ServletException(e.getMessage());
@@ -47,26 +48,27 @@ public class DeleteAd extends HttpServlet {
   }
 }
 
-
 // <?php
+// session_start();
 // if ($_GET['id'] && isset($_SESSION['username'])) {
+//   require_once(realpath(dirname(__FILE__) . "/../resources/config.php"));
+//   require_once(LIBRARY_PATH . "/databaseFunctions.php");
+//   $link;
+//   connect($link);
 //   $user_id = mysqli_real_escape_string($link, $_SESSION['id']);
 //   $ad_id = mysqli_real_escape_string($link, $_GET['id']);
-//   $query = "SELECT * FROM ad WHERE id='$ad_id'";
+//   $query = "SELECT * FROM ad WHERE id='$ad_id' AND user_id='$user_id'";
 //   $adResult = mysqli_query($link, $query);
-//   $ad = mysqli_fetch_array($adResult, MYSQLI_ASSOC);
 //   $count = mysqli_num_rows($adResult);
-//   if ($count == 1 && ($ad['userId'] == $user_id || $_SESSION['admin'])) {
-//     $query = "DELETE FROM ad WHERE id='$ad_id'";
-//     echo mysqli_query($link, $query);
+//   $ad = mysqli_fetch_array($adResult, MYSQLI_ASSOC);
+//   if ($count == 1) {
+//     $query = "UPDATE ad SET sold=1 WHERE id='$ad_id'";
 //     if (mysqli_query($link, $query)) {
 //       header("location: profile.php");
 //     } else {
-//       echo mysqli_error($link);
 //       header("location: index.php");
 //     }
 //   } else {
-//     echo mysqli_error($link);
 //     header("location: index.php");
 //   }
 // } else {

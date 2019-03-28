@@ -63,7 +63,7 @@ public class DataUser implements Serializable {
       if (rs != null && rs.next()) {
         user.setId(rs.getInt(1));
       } else {
-        throw new ApplicationException(new Throwable(), "El usuario ya está en uso.??????");
+        throw new ApplicationException("El usuario ya está en uso.??????");
       }
     } catch (SQLException e) {
       e.printStackTrace();

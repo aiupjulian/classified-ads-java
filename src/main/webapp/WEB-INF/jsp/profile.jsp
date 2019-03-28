@@ -37,8 +37,8 @@
         </div>
       </a>
       <div class="actions">
-        <a class="button" href="/sell.php?id=<%= ad.getId() %>">Editar</a>
-        <a class="button" href="/deleteAd.php?id=<%= ad.getId() %>">Eliminar</a>
+        <a class="button" href="/sell.jsp?id=<%= ad.getId() %>">Editar</a>
+        <a class="button" href="/deleteAd.jsp?id=<%= ad.getId() %>">Eliminar</a>
         <% if (!ad.getSold()) { %>
         <a class="button" href="/markAdAsSold.jsp?id=<%= ad.getId() %>">Marcar como vendido</a>
         <% } %>

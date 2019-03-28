@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import data.DataAd;
@@ -13,7 +14,22 @@ public class AdController {
 		dataAd = new DataAd();
 	}
 
-	public ArrayList<Ad> getAllByUser(Integer userId) throws Exception, ApplicationException {
+	public ArrayList<Ad> getAllByUser(Integer userId) throws SQLException, ApplicationException {
 		return dataAd.getAllByUser(userId);
+	}
+
+	public void delete(Integer adId, User user) throws SQLException, ApplicationException {
+		if (user.getAdmin()) {
+			dataAd.delete(adId);
+		} else {
+			Ad ad = dataAd.getById(adId);
+			if (ad.getUser().getId() == user.getId()) {
+				dataAd.delete(adId);
+			}
+		}
+	}
+
+	public void markAdAsSold(Integer adId, Integer userId) throws SQLException, ApplicationException {
+		dataAd.markAsSold(adId, userId);
 	}
 }
