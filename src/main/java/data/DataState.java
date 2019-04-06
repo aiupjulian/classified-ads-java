@@ -19,8 +19,8 @@ public class DataState implements Serializable {
 		try {
       stmt = FactoryConnection.getInstance().getConn().createStatement();
 			rs = stmt.executeQuery("SELECT * FROM classified_ads.state");
-			if (rs != null){
-				while(rs.next()){
+			if (rs != null) {
+				while (rs.next()) {
 					State state = new State();
 					state.setId(rs.getInt("id"));
 					state.setName(rs.getString("name"));
@@ -49,8 +49,8 @@ public class DataState implements Serializable {
 		}
 
 		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
+			if (rs != null) rs.close();
+			if (stmt != null) stmt.close();
 			FactoryConnection.getInstance().releaseConn();
 		} catch (SQLException e) {
 			e.printStackTrace();

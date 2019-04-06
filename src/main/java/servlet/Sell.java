@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,6 +35,12 @@ public class Sell extends HttpServlet {
           Ad ad = adController.getById(adId);
           request.setAttribute("ad", ad);
         }
+        CategoryController categoryController = new CategoryController();
+        ArrayList<Category> categories = categoryController.getAllWithSubcategories();
+        request.setAttribute("categories", categories);
+        StateController stateController = new StateController();
+        ArrayList<State> states = stateController.getAllWithCities();
+        request.setAttribute("states", states);
         request.getRequestDispatcher("/WEB-INF/jsp/sell.jsp").forward(request, response);
       } catch (Exception e) {
         throw new ServletException(e.getMessage());
