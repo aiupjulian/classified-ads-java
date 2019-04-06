@@ -18,6 +18,10 @@ public class AdController {
 		return dataAd.getAllByUser(userId);
 	}
 
+	public Ad getById(Integer adId) throws SQLException, ApplicationException {
+		return dataAd.getById(adId);
+	}
+
 	public void delete(Integer adId, User user) throws SQLException, ApplicationException {
 		if (user.getAdmin()) {
 			dataAd.delete(adId);
