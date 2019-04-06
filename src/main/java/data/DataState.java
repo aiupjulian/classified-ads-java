@@ -25,7 +25,7 @@ public class DataState implements Serializable {
 					state.setId(rs.getInt("id"));
 					state.setName(rs.getString("name"));
           PreparedStatement substmt = FactoryConnection.getInstance().getConn().prepareStatement(
-            "SELECT * FROM classified_ads.cities WHERE state_id=?"
+            "SELECT * FROM classified_ads.city WHERE state_id=?"
           );
           substmt.setInt(1, rs.getInt("id"));
           ResultSet subrs = substmt.executeQuery();

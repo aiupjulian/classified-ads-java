@@ -52,32 +52,32 @@ public class Sell extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    // String error = "";
-    // String username = request.getParameter("username");
-    // if (username == "") {
-    //   error = "Por favor complete todos los campos requeridos.";
-    //   request.setAttribute("error", error);
-    //   request.getRequestDispatcher("/WEB-INF/jsp/sell.jsp").forward(request, response);
-    // } else {
-    //   UserController userController = new UserController();
-    //   try {
-    //     User user = new User();
-    //     user.setUsername(username);
-    //     user.setPassword(password);
-    //     user.setName(name);
-    //     user.setPhone(phone);
-    //     user.setEmail(email);
-    //     user = userController.registerUser(user);
-    //     if (user != null) {
-    //       request.getSession().setAttribute("user", user);
-    //       response.sendRedirect("/profile.jsp");
-    //     } else {
-    //       request.setAttribute("error", "El usuario ya está en uso.");
-    //       request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
-    //     }
-    //   } catch (Exception e) {
-    //     throw new ServletException(e.getMessage());
-    //   }
-    // }
+    String error = "";
+    String username = request.getParameter("username");
+    if (username == "") {
+      error = "Por favor complete todos los campos requeridos.";
+      request.setAttribute("error", error);
+      request.getRequestDispatcher("/WEB-INF/jsp/sell.jsp").forward(request, response);
+    } else {
+      UserController userController = new UserController();
+      try {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setName(name);
+        user.setPhone(phone);
+        user.setEmail(email);
+        user = userController.registerUser(user);
+        if (user != null) {
+          request.getSession().setAttribute("user", user);
+          response.sendRedirect("/profile.jsp");
+        } else {
+          request.setAttribute("error", "El usuario ya está en uso.");
+          request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+        }
+      } catch (Exception e) {
+        throw new ServletException(e.getMessage());
+      }
+    }
   }
 }

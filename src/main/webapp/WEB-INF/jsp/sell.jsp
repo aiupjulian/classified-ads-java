@@ -1,10 +1,15 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@page import="java.util.ArrayList" %>
 <%@page import="java.lang.String" %>
-<%@page import="entity.Ad" %>
+<%@page import="java.lang.Integer" %>
+<%@page import="entity.*" %>
 <%
 String buttonText = "Crear";
+ArrayList<Category> categories = (ArrayList<Category>)request.getAttribute("categories");
+ArrayList<State> states = (ArrayList<State>)request.getAttribute("states");
+Ad ad = null;
 if (request.getAttribute("ad") != null) {
-  Ad ad = (Ad)request.getAttribute("ad");
+  ad = (Ad)request.getAttribute("ad");
   buttonText = "Editar";
 }
 %>
@@ -12,58 +17,39 @@ if (request.getAttribute("ad") != null) {
 <h2 class="form-title">Crear Aviso</h2>
 <form action="" method="post" class="form" enctype="multipart/form-data">
   <label for="name">Nombre del aviso:<span class="required"> (*)</span></label>
-  <input type="text" name="name" maxlength="15" required <?php if(isset($name)) echo "value='$name'"; ?>>
+  <% if (ad == null) { %><input type="text" name="name" maxlength="15" required>
+  <% } else { %><input type="text" name="name" maxlength="15" required value="<%= ad.getName() %>"><% } %>
   <label for="description">Descripción:<span class="required"> (*)</span></label>
-  <input type="text" name="description" maxlength="60" required <?php if(isset($description)) echo "value='$description'"; ?>>
+  <% if (ad == null) { %><input type="text" name="description" maxlength="60" required>
+  <% } else { %><input type="text" name="description" maxlength="60" required value="<%= ad.getDescription() %>"><% } %>
   <label for="price">Precio:<span class="required"> (*)</span></label>
-  <input type="number" name="price" maxlength="11" required <?php if(isset($price)) echo "value='$price'"; ?>>
+  <% if (ad == null) { %><input type="number" name="price" maxlength="11" required>
+  <% } else { %><input type="number" name="price" maxlength="11" required value=<%= ad.getPrice() %>><% } %>
   <label for="city">Ciudad:<span class="required"> (*)</span></label>
   <select name="city" required>
-    <?php
-    $statesQuery = "SELECT * FROM state";
-    $statesResult = mysqli_query($link, $statesQuery);
-    while ($state = mysqli_fetch_array($statesResult, MYSQLI_ASSOC)) {
-    ?>
-      <optgroup label="<?php echo $state['name']; ?>">
-      <?php
-      $citiesQuery = "SELECT * FROM city where state_id=" . $state['id'];
-      $citiesResult = mysqli_query($link, $citiesQuery);
-      while ($city = mysqli_fetch_array($citiesResult, MYSQLI_ASSOC)) {
-      ?>
-        <option value=<?php echo $city['id']; ?> <?php if(isset($city_id) && $city['id'] == $city_id) echo 'selected="selected"'; ?>>
-          <?php echo $city['name'] ?>
+    <% for (State state : states) { %>
+      <optgroup label="<%= state.getName() %>">
+      <% for (City city : state.getCities()) { %>
+        <% if (ad != null && city.getId() == ad.getCity().getId()) { %><option value="<%= city.getId() %>" selected="selected">
+        <% } else { %><option value="<%= city.getId() %>"><% } %>
+          <%= city.getName() %>
         </option>
-      <?php } ?>
+      <% } %>
       </optgroup>
-    <?php
-    }
-    close($link);
-    ?>
+    <% } %>
   </select>
   <label for="subcategory">Subcategoría:<span class="required"> (*)</span></label>
   <select name="subcategory" required>
-    <?php
-    $link;
-    connect($link);
-    $categoryQuery = "SELECT * FROM category";
-    $categoryResult = mysqli_query($link, $categoryQuery);
-    while ($category = mysqli_fetch_array($categoryResult, MYSQLI_ASSOC)) {
-    ?>
-      <optgroup label="<?php echo $category['name']; ?>">
-      <?php
-      $subcategoriesQuery = "SELECT * FROM subcategory where category_id=" . $category['id'];
-      $subcategoriesResult = mysqli_query($link, $subcategoriesQuery);
-      while ($subcategory = mysqli_fetch_array($subcategoriesResult, MYSQLI_ASSOC)) {
-      ?>
-        <option value=<?php echo $subcategory['id']; ?> <?php if(isset($subcategory_id) && $subcategory['id'] == $subcategory_id) echo 'selected="selected"'; ?>>
-          <?php echo $subcategory['name'] ?>
+    <% for (Category category : categories) { %>
+      <optgroup label="<%= category.getName() %>">
+      <% for (Subcategory subcategory : category.getSubcategories()) { %>
+        <% if (ad != null && subcategory.getId() == ad.getSubcategory().getId()) { %><option value="<%= subcategory.getId() %>" selected="selected">
+        <% } else { %><option value="<%= subcategory.getId() %>"><% } %>
+          <%= subcategory.getName() %>
         </option>
-      <?php } ?>
+      <% } %>
       </optgroup>
-    <?php
-    }
-    close($link);
-    ?>
+    <% } %>
   </select>
   <label for="image">Imágen:<span class="required"> (*)</span></label>
   <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
