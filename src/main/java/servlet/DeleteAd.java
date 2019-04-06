@@ -46,30 +46,3 @@ public class DeleteAd extends HttpServlet {
     super.doPost(request, response);
   }
 }
-
-
-// <?php
-// if ($_GET['id'] && isset($_SESSION['username'])) {
-//   $user_id = mysqli_real_escape_string($link, $_SESSION['id']);
-//   $ad_id = mysqli_real_escape_string($link, $_GET['id']);
-//   $query = "SELECT * FROM ad WHERE id='$ad_id'";
-//   $adResult = mysqli_query($link, $query);
-//   $ad = mysqli_fetch_array($adResult, MYSQLI_ASSOC);
-//   $count = mysqli_num_rows($adResult);
-//   if ($count == 1 && ($ad['userId'] == $user_id || $_SESSION['admin'])) {
-//     $query = "DELETE FROM ad WHERE id='$ad_id'";
-//     echo mysqli_query($link, $query);
-//     if (mysqli_query($link, $query)) {
-//       header("location: profile.php");
-//     } else {
-//       echo mysqli_error($link);
-//       header("location: index.php");
-//     }
-//   } else {
-//     echo mysqli_error($link);
-//     header("location: index.php");
-//   }
-// } else {
-//   header("location: index.php");
-// }
-// ?>

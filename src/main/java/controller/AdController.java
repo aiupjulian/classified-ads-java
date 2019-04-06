@@ -25,6 +25,8 @@ public class AdController {
 			Ad ad = dataAd.getById(adId);
 			if (ad.getUser().getId() == user.getId()) {
 				dataAd.delete(adId);
+			} else {
+				throw new ApplicationException("No tiene permisos para eliminar ese aviso.");
 			}
 		}
 	}
