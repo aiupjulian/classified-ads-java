@@ -34,7 +34,7 @@
           if (user != null) {
         %>
           <a href="sell.jsp">Vender</a>
-          <a href="profile.jsp">Perfil</a>
+          <a href="profile.jsp">Perfil (<%= user.getUsername() %>)</a>
           <a href="logout.jsp">Logout</a>
         <% } else { %>
           <a href="register.jsp">Registro</a>

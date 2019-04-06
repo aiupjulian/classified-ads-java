@@ -1,6 +1,6 @@
 <h2 class="form-title">Crear Aviso</h2>
 <form action="" method="post" class="form" enctype="multipart/form-data">
-  <label for="name">Nombre:<span class="required"> (*)</span></label>
+  <label for="name">Nombre del aviso:<span class="required"> (*)</span></label>
   <input type="text" name="name" maxlength="15" required <?php if(isset($name)) echo "value='$name'"; ?>>
   <label for="description">Descripción:<span class="required"> (*)</span></label>
   <input type="text" name="description" maxlength="60" required <?php if(isset($description)) echo "value='$description'"; ?>>

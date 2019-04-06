@@ -41,7 +41,6 @@
 .categories-title > a {
   display: flex;
   align-items: center;
-  color: blue;
 }
 
 .categories-list {

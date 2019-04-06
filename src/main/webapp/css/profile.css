@@ -32,6 +32,17 @@
   text-decoration: none;
 }
 
+.ads-list > li > a:visited {
+  width: 65%;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 5px;
+  background-color: #bbbbbb;
+  text-decoration: none;
+}
+
 .ads-list > li > a > div {
   flex-basis: 50%;
   color: black;

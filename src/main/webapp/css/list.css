@@ -48,6 +48,10 @@
   height: 100px;
 }
 
+.ads-list > li > a:visited {
+  background-color: #bbbbbb;
+}
+
 .ads-list > li > a > div {
   flex-basis: 50%;
   color: black;
