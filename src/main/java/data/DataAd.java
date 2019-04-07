@@ -180,10 +180,10 @@ public class DataAd implements Serializable {
       stmt.setString(2, ad.getDescription());
       stmt.setInt(3, ad.getPrice());
       stmt.setString(4, ad.getDate());
-      stmt.setString(5, ad.getUser().getId());
+      stmt.setInt(5, ad.getUser().getId());
       stmt.setString(6, ad.getImage());
-      stmt.setString(7, ad.getCity().getId());
-      stmt.setString(8, ad.getSubcategory().getId());
+      stmt.setInt(7, ad.getCity().getId());
+      stmt.setInt(8, ad.getSubcategory().getId());
       rs = stmt.executeQuery();
       if (rs != null && rs.next()) {
         ad.setId(rs.getInt(1));
@@ -217,10 +217,10 @@ public class DataAd implements Serializable {
       stmt.setString(2, ad.getDescription());
       stmt.setInt(3, ad.getPrice());
       stmt.setString(4, ad.getDate());
-      stmt.setString(5, ad.getUser().getId());
+      stmt.setInt(5, ad.getUser().getId());
       stmt.setString(6, ad.getImage());
-      stmt.setString(7, ad.getCity().getId());
-      stmt.setString(8, ad.getSubcategory().getId());
+      stmt.setInt(7, ad.getCity().getId());
+      stmt.setInt(8, ad.getSubcategory().getId());
       stmt.setInt(9, ad.getId());
       Boolean success = stmt.executeUpdate() != 0;
       if (!success) {
