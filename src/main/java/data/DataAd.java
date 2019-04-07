@@ -233,7 +233,6 @@ public class DataAd implements Serializable {
       e.printStackTrace();
     } finally {
       try {
-        if (rs != null) rs.close();
         if (stmt != null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
       } catch (ApplicationException e) {
