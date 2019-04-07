@@ -14,6 +14,14 @@ public class AdController {
 		dataAd = new DataAd();
 	}
 
+	public Ad createAd(Ad ad) {
+		return dataAd.createAd(ad);
+	}
+
+	public Ad updateAd(Ad ad) {
+		return dataAd.updateAd(ad);
+	}
+
 	public ArrayList<Ad> getAllByUser(Integer userId) throws SQLException, ApplicationException {
 		return dataAd.getAllByUser(userId);
 	}

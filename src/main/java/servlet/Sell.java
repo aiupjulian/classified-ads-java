@@ -77,7 +77,13 @@ public class Sell extends HttpServlet {
           ad.setPrice(price);
           ad.setCity(phone);
           ad.setEmail(email);
-          ad = adController.createAd(ad);
+          String stringAdId = request.getParameter("id");
+          if (stringAdId != null) {
+            ad.setId(Integer.parseInt(request.getParameter("id")));
+            adController.updateAd(ad);
+          } else {
+            ad = adController.createAd(ad);
+          }
           request.getSession().setAttribute("ad", ad);
           response.sendRedirect("/ad.jsp"); // TODO: ADD adId
         } catch (Exception e) {

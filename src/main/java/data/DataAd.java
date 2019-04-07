@@ -169,7 +169,7 @@ public class DataAd implements Serializable {
 		}
   }
 
-  public Ad add(Ad ad) throws ApplicationException {
+  public Ad createAd(Ad ad) throws ApplicationException {
     ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
@@ -190,7 +190,45 @@ public class DataAd implements Serializable {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new ApplicationException(e, "Hubo un error al intentar crear el usuario.");
+      throw new ApplicationException(e, "Hubo un error al intentar crear el aviso.");
+    } catch (ApplicationException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (ApplicationException e) {
+        e.printStackTrace();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return ad;
+  }
+
+  public Ad updateAd(Ad ad) throws ApplicationException {
+    PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+        "UPDATE classified_ads.ad SET name=?, description=?, price=?, date=?, user_id=?, image=?, city_id=?, subcategory_id=? WHERE ?"
+      );
+      stmt.setString(1, ad.getName());
+      stmt.setString(2, ad.getDescription());
+      stmt.setInt(3, ad.getPrice());
+      stmt.setString(4, ad.getDate());
+      stmt.setString(5, ad.getUser().getId());
+      stmt.setString(6, ad.getImage());
+      stmt.setString(7, ad.getCity().getId());
+      stmt.setString(8, ad.getSubcategory().getId());
+      stmt.setInt(9, ad.getId());
+      Boolean success = stmt.executeUpdate() != 0;
+      if (!success) {
+        throw new ApplicationException("No se encontró el aviso a editar.");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new ApplicationException(e, "Hubo un error al intentar editar el aviso.");
     } catch (ApplicationException e) {
       e.printStackTrace();
     } finally {
