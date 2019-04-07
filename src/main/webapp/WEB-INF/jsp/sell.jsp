@@ -53,7 +53,7 @@ if (request.getAttribute("ad") != null) {
   </select>
   <label for="image">Imágen:<span class="required"> (*)</span></label>
   <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-  <input type="file" name="image" accept="image/png, image/jpeg" required>
+  <input type="file" name="image" accept="image/png, image/jpeg">
   <button class="button"><%= buttonText %></button>
   <% if (request.getAttribute("error") != null) { %>
     <div class="error"><%= request.getAttribute("error") %></div>

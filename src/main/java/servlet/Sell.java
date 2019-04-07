@@ -52,32 +52,40 @@ public class Sell extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String error = "";
-    String username = request.getParameter("username");
-    if (username == "") {
-      error = "Por favor complete todos los campos requeridos.";
-      request.setAttribute("error", error);
-      request.getRequestDispatcher("/WEB-INF/jsp/sell.jsp").forward(request, response);
-    } else {
-      UserController userController = new UserController();
-      try {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setName(name);
-        user.setPhone(phone);
-        user.setEmail(email);
-        user = userController.registerUser(user);
-        if (user != null) {
-          request.getSession().setAttribute("user", user);
-          response.sendRedirect("/profile.jsp");
-        } else {
-          request.setAttribute("error", "El usuario ya está en uso.");
-          request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+    HttpSession session = request.getSession(false);
+    if (session != null && session.getAttribute("user") != null) {
+      String error = "";
+      String name = request.getParameter("name");
+      String description = request.getParameter("description");
+      String price = request.getParameter("price");
+      String cityId = request.getParameter("city");
+      String subcategoryId = request.getParameter("subcategory");
+      // calculate current date
+      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      LocalDate localDate = LocalDate.now();
+      String date = dtf.format(localDate);
+      if (name == "" || description == "" || price == "" || cityId == "" || subcategoryId == "") {
+        error = "Por favor complete todos los campos requeridos.";
+        request.setAttribute("error", error);
+        request.getRequestDispatcher("/WEB-INF/jsp/sell.jsp").forward(request, response);
+      } else {
+        AdController adController = new AdController();
+        try {
+          Ad ad = new Ad();
+          ad.setName(name);
+          ad.setDescription(description);
+          ad.setPrice(price);
+          ad.setCity(phone);
+          ad.setEmail(email);
+          ad = adController.createAd(ad);
+          request.getSession().setAttribute("ad", ad);
+          response.sendRedirect("/ad.jsp"); // TODO: ADD adId
+        } catch (Exception e) {
+          throw new ServletException(e.getMessage());
         }
-      } catch (Exception e) {
-        throw new ServletException(e.getMessage());
       }
+    } else {
+      response.sendRedirect("/login.jsp");
     }
   }
 }

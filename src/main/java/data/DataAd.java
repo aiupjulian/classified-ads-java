@@ -162,47 +162,48 @@ public class DataAd implements Serializable {
 		}
 
 		try {
-			if (stmt!=null) stmt.close();
+			if (stmt != null) stmt.close();
 			FactoryConnection.getInstance().releaseConn();
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
 		}
   }
 
-  // public User add(User user) throws ApplicationException {
-  //   ResultSet rs = null;
-  //   PreparedStatement stmt = null;
-  //   try {
-  //     stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-  //       "INSERT INTO classified_ads.user (username, password, name, phone, email) VALUES (?, ?, ?, ?, ?) RETURNING id"
-  //     );
-  //     stmt.setString(1, user.getUsername());
-  //     stmt.setString(2, user.getPassword());
-  //     stmt.setString(3, user.getName());
-  //     stmt.setString(4, user.getPhone());
-  //     stmt.setString(5, user.getEmail());
-  //     rs = stmt.executeQuery();
-  //     if (rs != null && rs.next()) {
-  //       user.setId(rs.getInt(1));
-  //     } else {
-  //       throw new ApplicationException(new Throwable(), "El usuario ya está en uso.??????");
-  //     }
-  //   } catch (SQLException e) {
-  //     e.printStackTrace();
-  //     throw new ApplicationException(e, "Hubo un error al intentar crear el usuario.");
-  //   } catch (ApplicationException e) {
-  //     e.printStackTrace();
-  //   } finally {
-  //     try {
-  //       if (rs != null) rs.close();
-  //       if (stmt != null) stmt.close();
-  //       FactoryConnection.getInstance().releaseConn();
-  //     } catch (ApplicationException e) {
-  //       e.printStackTrace();
-  //     } catch (SQLException e) {
-  //       e.printStackTrace();
-  //     }
-  //   }
-  //   return user;
-  // }
+  public Ad add(Ad ad) throws ApplicationException {
+    ResultSet rs = null;
+    PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+        "INSERT INTO classified_ads.ad (name, description, price, date, user_id, image, city_id, subcategory_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id"
+      );
+      stmt.setString(1, ad.getName());
+      stmt.setString(2, ad.getDescription());
+      stmt.setInt(3, ad.getPrice());
+      stmt.setString(4, ad.getDate());
+      stmt.setString(5, ad.getUser().getId());
+      stmt.setString(6, ad.getImage());
+      stmt.setString(7, ad.getCity().getId());
+      stmt.setString(8, ad.getSubcategory().getId());
+      rs = stmt.executeQuery();
+      if (rs != null && rs.next()) {
+        ad.setId(rs.getInt(1));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new ApplicationException(e, "Hubo un error al intentar crear el usuario.");
+    } catch (ApplicationException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (ApplicationException e) {
+        e.printStackTrace();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return ad;
+  }
 }
