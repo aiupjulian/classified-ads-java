@@ -1,9 +1,9 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.io.Serializable;
 import java.sql.*;
-import com.uploadcare.api.Client;
 
 import entity.*;
 import util.ApplicationException;
@@ -176,10 +176,12 @@ public class DataAd implements Serializable {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
         "INSERT INTO classified_ads.ad (name, description, price, date, user_id, image, city_id, subcategory_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id"
       );
+      java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+      ad.setDate(date.toString());
       stmt.setString(1, ad.getName());
       stmt.setString(2, ad.getDescription());
       stmt.setInt(3, ad.getPrice());
-      stmt.setString(4, ad.getDate());
+      stmt.setDate(4, date);
       stmt.setInt(5, ad.getUser().getId());
       stmt.setString(6, ad.getImage());
       stmt.setInt(7, ad.getCity().getId());
@@ -210,18 +212,25 @@ public class DataAd implements Serializable {
   public Ad updateAd(Ad ad) throws ApplicationException {
     PreparedStatement stmt = null;
     try {
-      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-        "UPDATE classified_ads.ad SET name=?, description=?, price=?, date=?, user_id=?, image=?, city_id=?, subcategory_id=? WHERE ?"
-      );
+      if (ad.getImage() != null && ad.getImage() != "") {
+        stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+          "UPDATE classified_ads.ad SET name=?, description=?, price=?, date=?, user_id=?, city_id=?, subcategory_id=?, image=? WHERE ?"
+        );
+        stmt.setString(9, ad.getImage());
+      } else {
+        stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+          "UPDATE classified_ads.ad SET name=?, description=?, price=?, date=?, user_id=?, city_id=?, subcategory_id=? WHERE ?"
+        );
+      }
+      
       stmt.setString(1, ad.getName());
       stmt.setString(2, ad.getDescription());
       stmt.setInt(3, ad.getPrice());
       stmt.setString(4, ad.getDate());
       stmt.setInt(5, ad.getUser().getId());
-      stmt.setString(6, ad.getImage());
-      stmt.setInt(7, ad.getCity().getId());
-      stmt.setInt(8, ad.getSubcategory().getId());
-      stmt.setInt(9, ad.getId());
+      stmt.setInt(6, ad.getCity().getId());
+      stmt.setInt(7, ad.getSubcategory().getId());
+      stmt.setInt(8, ad.getId());
       Boolean success = stmt.executeUpdate() != 0;
       if (!success) {
         throw new ApplicationException("No se encontró el aviso a editar.");

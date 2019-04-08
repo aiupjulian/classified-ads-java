@@ -1,26 +1,50 @@
 package servlet;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import controller.*;
 import entity.*;
 import util.ApplicationException;
+import com.uploadcare.api.Client;
+import com.uploadcare.upload.FileUploader;
+import com.uploadcare.upload.Uploader;
+import com.uploadcare.upload.UploadFailureException;
 
+@MultipartConfig()
 @WebServlet(urlPatterns = { "/sell", "/sell.jsp" })
 public class Sell extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   public Sell() {
     super();
+  }
+
+  private static String getSubmittedFileName(Part part) {
+    for (String cd : part.getHeader("content-disposition").split(";")) {
+      if (cd.trim().startsWith("filename")) {
+        String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+        return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1); // MSIE fix.
+      }
+    }
+    return null;
   }
 
   @Override
@@ -57,36 +81,57 @@ public class Sell extends HttpServlet {
       String error = "";
       String name = request.getParameter("name");
       String description = request.getParameter("description");
-      String price = request.getParameter("price");
-      String cityId = request.getParameter("city");
-      String subcategoryId = request.getParameter("subcategory");
-      // calculate current date
-      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      LocalDate localDate = LocalDate.now();
-      String date = dtf.format(localDate);
-      if (name == "" || description == "" || price == "" || cityId == "" || subcategoryId == "") {
+      String priceString = request.getParameter("price");
+      String cityIdString = request.getParameter("city");
+      String subcategoryIdString = request.getParameter("subcategory");
+      if (name == "" || description == "" || priceString == "" || cityIdString == "" || subcategoryIdString == "") {
         error = "Por favor complete todos los campos requeridos.";
         request.setAttribute("error", error);
         request.getRequestDispatcher("/WEB-INF/jsp/sell.jsp").forward(request, response);
       } else {
         AdController adController = new AdController();
         try {
+          // Image upload
+          String image = "";
+          if (request.getPart("image") != null) {
+            Part filePart = request.getPart("image");
+            String fileName = getSubmittedFileName(filePart);
+            InputStream fileContent = filePart.getInputStream();
+            byte[] buffer = new byte[fileContent.available()];
+            fileContent.read(buffer);
+            File targetFile = File.createTempFile(fileName, ".jpg");
+            OutputStream outStream = new FileOutputStream(targetFile);
+            outStream.write(buffer);
+            Client client = new Client("ce0c630573163927235e", "25907025b19c9fcf77ea");
+            Uploader uploader = new FileUploader(client, targetFile);
+            com.uploadcare.api.File file = uploader.upload().save();
+            image = file.getOriginalFileUrl().toString();
+          }
+          
           Ad ad = new Ad();
           ad.setName(name);
           ad.setDescription(description);
-          ad.setPrice(price);
-          ad.setCity(phone);
-          ad.setEmail(email);
+          ad.setPrice(Integer.parseInt(priceString));
+          City city = new City();
+          city.setId(Integer.parseInt(cityIdString));
+          ad.setCity(city);
+          Subcategory subcategory = new Subcategory();
+          subcategory.setId(Integer.parseInt(subcategoryIdString));
+          ad.setSubcategory(subcategory);
+          if (image != "") {
+            ad.setImage(image);
+          }
           String stringAdId = request.getParameter("id");
           if (stringAdId != null) {
             ad.setId(Integer.parseInt(request.getParameter("id")));
             adController.updateAd(ad);
           } else {
+            ad.setUser((User)session.getAttribute("user"));
             ad = adController.createAd(ad);
           }
           request.getSession().setAttribute("ad", ad);
-          response.sendRedirect("/ad.jsp"); // TODO: ADD adId
-        } catch (Exception e) {
+          response.sendRedirect("/ad.jsp?id=" + ad.getId());
+        } catch (ApplicationException | UploadFailureException e) {
           throw new ServletException(e.getMessage());
         }
       }

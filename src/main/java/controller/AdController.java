@@ -14,11 +14,11 @@ public class AdController {
 		dataAd = new DataAd();
 	}
 
-	public Ad createAd(Ad ad) {
+	public Ad createAd(Ad ad) throws ApplicationException {
 		return dataAd.createAd(ad);
 	}
 
-	public Ad updateAd(Ad ad) {
+	public Ad updateAd(Ad ad) throws ApplicationException {
 		return dataAd.updateAd(ad);
 	}
 
