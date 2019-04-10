@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -93,8 +94,8 @@ public class Sell extends HttpServlet {
         try {
           // Image upload
           String image = "";
-          if (request.getPart("image") != null) {
-            Part filePart = request.getPart("image");
+          Part filePart = request.getPart("image");
+          if (filePart.getSize() != 0) {
             String fileName = getSubmittedFileName(filePart);
             InputStream fileContent = filePart.getInputStream();
             byte[] buffer = new byte[fileContent.available()];
@@ -107,7 +108,7 @@ public class Sell extends HttpServlet {
             com.uploadcare.api.File file = uploader.upload().save();
             image = file.getOriginalFileUrl().toString();
           }
-          
+
           Ad ad = new Ad();
           ad.setName(name);
           ad.setDescription(description);
@@ -126,6 +127,9 @@ public class Sell extends HttpServlet {
             ad.setId(Integer.parseInt(request.getParameter("id")));
             adController.updateAd(ad);
           } else {
+            if (image == "") {
+              ad.setImage("https://ucarecdn.com/eae359c8-bbca-4ef8-88cd-bdaee854ecdf/nopic.jpg");
+            }
             ad.setUser((User)session.getAttribute("user"));
             ad = adController.createAd(ad);
           }

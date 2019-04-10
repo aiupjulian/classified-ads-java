@@ -149,7 +149,7 @@ public class DataAd implements Serializable {
     PreparedStatement stmt = null;
 		try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-        "UPDATE classified_ads.ad SET sold=1 WHERE id=? AND user_id=?"
+        "UPDATE classified_ads.ad SET sold=true WHERE id=? AND user_id=?"
       );
       stmt.setInt(1, adId);
       stmt.setInt(2, userId);

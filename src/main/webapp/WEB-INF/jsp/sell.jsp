@@ -51,7 +51,7 @@ if (request.getAttribute("ad") != null) {
       </optgroup>
     <% } %>
   </select>
-  <label for="image">Imágen:<span class="required"> (*)</span></label>
+  <label for="image">Imágen:</label>
   <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
   <input type="file" name="image" accept="image/png, image/jpeg">
   <button class="button"><%= buttonText %></button>

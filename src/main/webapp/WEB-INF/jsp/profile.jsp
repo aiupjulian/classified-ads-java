@@ -28,7 +28,7 @@
   %>
     <li>
       <a href="/ad.jsp?id=<%= ad.getId() %>">
-        <div class="image-container"><img alt="Image for Ad <%= ad.getName() %>" src="https://ucarecdn.com/<%= ad.getImage() %>/" /></div>
+        <div class="image-container"><img alt="Image for Ad <%= ad.getName() %>" src="<%= ad.getImage() %>" /></div>
         <div class="ad-container">
           <div class="ad-name"><%= ad.getName() %></div>
           <div class="ad-price">$<%= ad.getPrice() %></div>
