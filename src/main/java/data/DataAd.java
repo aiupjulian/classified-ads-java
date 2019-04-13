@@ -2,11 +2,12 @@ package data;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.io.Serializable;
 import java.sql.*;
 
 import entity.*;
-import util.ApplicationException;
+import util.*;
 
 public class DataAd implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -114,12 +115,88 @@ public class DataAd implements Serializable {
 			if (rs!=null) rs.close();
 			if (stmt!=null) stmt.close();
 			FactoryConnection.getInstance().releaseConn();
-			FactoryConnection.getInstance().releaseConn();
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
 		}
 
 		return ads;
+  }
+
+  public DataAdsPages getAllByQuery(HashMap<String, String> queryMap) throws ApplicationException {
+    PreparedStatement stmt = null;
+		ResultSet rs = null;
+    ArrayList<Ad> ads = new ArrayList<Ad>();
+    Integer pages = 0;
+		try {
+      String conditions = "WHERE classified_ads.ad.sold != false";
+      if (queryMap.get("name") != null) conditions += " AND (ad.name LIKE '%?%'  OR ad.description LIKE '%?%')";
+      if (queryMap.get("subcategory") != null) conditions += " AND subcategory_id=?";
+      if (queryMap.get("city") != null) conditions += " AND city_id=?";
+      if (queryMap.get("price1") != null && queryMap.get("price2") != null)
+        conditions += " AND price BETWEEN ? AND ?";
+      if (queryMap.get("price1") != null && queryMap.get("price1") != "") conditions += " AND price>=?";
+      if (queryMap.get("price2") != null && queryMap.get("price2") != "") conditions += " AND price<=?";
+      Integer adsPerPage = 2;
+      Integer page = (queryMap.get("page") != null) ? Integer.parseInt(queryMap.get("page")) : 1;
+      Integer start = (page - 1) * adsPerPage;
+      conditions += " LIMIT " + adsPerPage.toString() + " OFFSET " + start.toString();
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+        "SELECT classified_ads.ad.*, classified_ads.user.*, " +
+        "classified_ads.subcategory.*, classified_ads.category.*, " +
+        "classified_ads.city.*, classified_ads.state.*, count(*) OVER() AS total_count " +
+        "FROM classified_ads.ad " +
+        "INNER JOIN classified_ads.user ON classified_ads.ad.user_id=classified_ads.user.id " +
+        "INNER JOIN classified_ads.subcategory ON classified_ads.ad.subcategory_id=classified_ads.subcategory.id " +
+        "INNER JOIN classified_ads.category ON classified_ads.subcategory.category_id=classified_ads.category.id " +
+        "INNER JOIN classified_ads.city ON classified_ads.ad.city_id=classified_ads.city.id " +
+        "INNER JOIN classified_ads.state ON classified_ads.city.state_id=classified_ads.state.id " +
+        conditions
+      );
+      Integer countCondition = 1;
+      if (queryMap.get("name") != null) { stmt.setString(countCondition, queryMap.get("name")); countCondition++; }
+      if (queryMap.get("subcategory") != null) { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("subcategory"))); countCondition++; }
+      if (queryMap.get("city") != null) { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("city"))); countCondition++; }
+      if (queryMap.get("price1") != null && queryMap.get("price1") != "") { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("price1"))); countCondition++; }
+      if (queryMap.get("price2") != null && queryMap.get("price2") != "") { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("price2"))); countCondition++; }
+      rs = stmt.executeQuery();
+			if (rs != null) {
+				while(rs.next()){
+          if (pages == 0) pages = (int)Math.ceil(rs.getInt("total_count") / adsPerPage);
+					Ad ad = new Ad();
+          ad.setId(rs.getInt(1));
+          ad.setName(rs.getString(2));
+          ad.setDescription(rs.getString(3));
+          ad.setPrice(rs.getInt(4));
+          ad.setSold(rs.getBoolean(5));
+          ad.setDate(rs.getString(6));
+          ad.setImage(rs.getString(8));
+          User user = new User(rs.getInt(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getBoolean(17));
+          ad.setUser(user);
+          Category category = new Category(rs.getInt(21), rs.getString(22));
+          Subcategory subcategory = new Subcategory(rs.getInt(18), rs.getString(19), category);
+          ad.setSubcategory(subcategory);
+          State state = new State(rs.getInt(26), rs.getString(27));
+          City city = new City(rs.getInt(23), rs.getString(24), state);
+          ad.setCity(city);
+					ads.add(ad);
+        }
+			}
+		} catch (SQLException e) {
+      e.printStackTrace();
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		}
+
+		try {
+			if (rs!=null) rs.close();
+			if (stmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+    }
+    
+    DataAdsPages dataAdsPages = new DataAdsPages(ads, pages);
+
+		return dataAdsPages;
   }
 
   public void delete(Integer adId) throws SQLException, ApplicationException {

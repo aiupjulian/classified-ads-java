@@ -2,10 +2,11 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import data.DataAd;
 import entity.*;
-import util.ApplicationException;
+import util.*;
 
 public class AdController {
 	private data.DataAd dataAd;
@@ -24,6 +25,10 @@ public class AdController {
 
 	public ArrayList<Ad> getAllByUser(Integer userId) throws SQLException, ApplicationException {
 		return dataAd.getAllByUser(userId);
+	}
+
+	public DataAdsPages getAllByQuery(HashMap<String, String> queryMap) throws ApplicationException {
+		return dataAd.getAllByQuery(queryMap);
 	}
 
 	public Ad getById(Integer adId) throws SQLException, ApplicationException {
