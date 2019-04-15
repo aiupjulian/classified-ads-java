@@ -1,120 +1,109 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@page import="java.util.ArrayList" %>
-<%@page import="java.lang.String" %>
-<%@page import="entity.User" %>
-<%@page import="entity.Ad" %>
-<% User user = (User)session.getAttribute("user"); %>
+<%@page import="entity.*" %>
+<%@page import="java.net.URI" %>
+<%@page import="org.apache.http.client.utils.URIBuilder" %>
 <%
-	ArrayList<Ad> ads = new ArrayList<Ad>();
-	ads = (ArrayList<Ad>)request.getAttribute("ads");
+User user = (User)session.getAttribute("user");
+ArrayList<Ad> ads = (ArrayList<Ad>)request.getAttribute("ads");
+Integer pages = (Integer)request.getAttribute("pages");
+ArrayList<Category> categories = (ArrayList<Category>)request.getAttribute("categories");
+ArrayList<State> states = (ArrayList<State>)request.getAttribute("states");
+String name = (request.getParameter("name") != null) ? request.getParameter("name") : "";
+String price1 = (request.getParameter("price1") != null) ? request.getParameter("price1") : "";
+String price2 = (request.getParameter("price2") != null) ? request.getParameter("price2") : "";
+Integer subcategoryId = (request.getParameter("subcategory") != null && request.getParameter("subcategory") != "") ? Integer.parseInt(request.getParameter("subcategory")) : null;
+Integer cityId = (request.getParameter("city") != null && request.getParameter("city") != "") ? Integer.parseInt(request.getParameter("city")) : null;
 %>
 <jsp:include page="./layout/header.jsp" />
-<style><%@ include file="../../css/profile.css" %></style>
+<style><%@ include file="../../css/list.css" %></style>
 <h2 class="form-title">Listado</h2>
 <div class="list-container">
   <form action="" method="get" class="filters" autocomplete="off">
     <label for="name">Nombre del aviso:</label>
-    <input type="text" name="name" maxlength="15" value="<?php echo isset($_GET['name']) ? $_GET['name'] : '' ?>">
+    <input type="text" name="name" maxlength="15" value="<%= name %>">
     <fieldset>
       <legend>Precio:</legend>
-      <input type="number" name="price1" maxlength="11" placeholder="Desde" value="<?php echo isset($_GET['price1']) ? $_GET['price1'] : '' ?>">
-      <input type="number" name="price2" maxlength="11" placeholder="Hasta" value="<?php echo isset($_GET['price2']) ? $_GET['price2'] : '' ?>">
+      <input type="number" name="price1" maxlength="11" placeholder="Desde" value="<%= price1 %>">
+      <input type="number" name="price2" maxlength="11" placeholder="Hasta" value="<%= price2 %>">
     </fieldset>
     <label for="city">Ciudad:</label>
     <select name="city">
-      <?php if (empty($_GET["city"])) { ?>
-        <option disabled selected value>Seleccione una ciudad</option>
-      <?php
-      }
-      $statesQuery = "SELECT * FROM state";
-      $statesResult = mysqli_query($link, $statesQuery);
-      while ($state = mysqli_fetch_array($statesResult, MYSQLI_ASSOC)) {
-      ?>
-        <optgroup label="<?php echo $state['name']; ?>">
-        <?php
-        $citiesQuery = "SELECT * FROM city where state_id=" . $state['id'];
-        $citiesResult = mysqli_query($link, $citiesQuery);
-        while ($city = mysqli_fetch_array($citiesResult, MYSQLI_ASSOC)) {
-        ?>
-          <option value=<?php echo $city['id']; ?> <?php echo (!empty($_GET['city']) && $_GET['city'] == $city['id']) ? 'selected="selected"' : ''; ?>>
-            <?php echo $city['name'] ?>
+      <% if (cityId == null) { %>
+      <option selected value>Todas las ciudades</option>
+      <% } else { %>
+      <option value="">Todas las ciudades</option>
+      <% } for (State state : states) { %>
+        <optgroup label="<%= state.getName() %>">
+        <% for (City city : state.getCities()) { %>
+          <% if (city.getId() == cityId) { %><option value="<%= city.getId() %>" selected="selected">
+          <% } else { %><option value="<%= city.getId() %>"><% } %>
+            <%= city.getName() %>
           </option>
-        <?php } ?>
+        <% } %>
         </optgroup>
-      <?php
-      }
-      ?>
+      <% } %>
     </select>
-    <label for="subcategory">Subcategorías:</label>
+    <label for="subcategory">Subcategoría:</label>
     <select name="subcategory">
-      <?php if (empty($_GET["subcategory"])) { ?>
-        <option disabled selected value>Seleccione una subcategoría</option>
-      <?php
-      }
-      $categoryQuery = "SELECT * FROM category";
-      $categoryResult = mysqli_query($link, $categoryQuery);
-      while ($category = mysqli_fetch_array($categoryResult, MYSQLI_ASSOC)) {
-      ?>
-        <optgroup label="<?php echo $category['name']; ?>">
-        <?php
-        $subcategoriesQuery = "SELECT * FROM subcategory where category_id=" . $category['id'];
-        $subcategoriesResult = mysqli_query($link, $subcategoriesQuery);
-        while ($subcategory = mysqli_fetch_array($subcategoriesResult, MYSQLI_ASSOC)) {
-        ?>
-          <option value=<?php echo $subcategory['id']; ?> <?php echo (!empty($_GET['subcategory']) && $_GET['subcategory'] == $subcategory['id']) ? 'selected="selected"' : ''; ?>>
-            <?php echo $subcategory['name'] ?>
-          </option>
-        <?php } ?>
+      <% if (subcategoryId == null) { %>
+      <option selected value>Todas las subcategorías</option>
+      <% } else { %>
+      <option value="">Todas las subcategorías</option>
+      <% } for (Category category : categories) { %>
+        <optgroup label="<%= category.getName() %>">
+        <%
+          for (Subcategory subcategory : category.getSubcategories()) {
+            if (subcategory.getId() == subcategoryId) {
+        %>
+              <option value="<%= subcategory.getId() %>" selected="selected">
+        <%  } else { %>
+              <option value="<%= subcategory.getId() %>">
+        <%  } %>
+                <%= subcategory.getName() %>
+              </option>
+        <% } %>
         </optgroup>
-      <?php
-      }
-      ?>
+      <% } %>
     </select>
     <button class="button">Buscar</button>
   </form>
   <ul class="ads-container">
     <div class="ads-list">
-    <?php
-    if ($count == 0) {
-    ?>
+    <% if (ads.size() == 0) { %>
     <div style="text-align: center;">No hay avisos para mostrar con esos filtros.</div>
-    <?php
-    }
-    while ($ad = mysqli_fetch_array($adsResult, MYSQLI_ASSOC)) {
-    ?>
+    <% } for (Ad ad : ads) { %>
       <li>
-        <a href="<?php echo "/ad.php?id=" . $ad['id'] ?>">
-          <div class="image-container"><img alt="<?php echo "Image for Ad " . $ad['name']; ?>" src="<?php echo "images/uploaded/" . $ad['image']; ?>" /></div>
+        <a href="/ad.jsp?id=<%= ad.getId() %>">
+          <div class="image-container"><img alt="Image for Ad <%= ad.getName()%>" src="<%= ad.getImage() %>" /></div>
           <div class="ad-container">
-            <div class="ad-name"><?php echo $ad['name']; ?></div>
-            <div class="ad-user-name">
-              Creado por: <?php echo $ad['user_name']; ?>
-            </div>
-            <div class="ad-price">$<?php echo $ad['price']; ?></div>
-            <div class="ad-date"><?php echo $ad['date']; ?></div>
+            <div class="ad-name"><%= ad.getName() %></div>
+            <div class="ad-user-name">Creado por: <%= ad.getUser().getName() %></div>
+            <div class="ad-price">$<%= ad.getPrice() %></div>
+            <div class="ad-date"><%= ad.getDate() %></div>
           </div>
         </a>
-        <?php if(isset($_SESSION["admin"]) && $_SESSION["admin"])  { ?>
-          <div class="ad-delete-admin"><a href="<?php echo "/deleteAd.php?id=" . $ad['id'] ?>">Eliminar este aviso</a></div>
-        <?php } ?>
+        <% if (user != null && user.getAdmin()) { %>
+          <div class="ad-delete-admin"><a href="/deleteAd.jsp?id=<%= ad.getId() %>">Eliminar este aviso</a></div>
+        <% } %>
       </li>
-    <?php
-    }
-    close($link);
-    ?>
+    <% } %>
     </div>
     <div class="ads-pagination">
-      <?php
-      if ($pages > 1) {
-        for ($i = 1; $i <= $pages; $i++) {
-          $query = $_GET;
-          $query['page'] = $i;
-          $query_result = http_build_query($query);
-          if ($page == $i) echo "<span>" . $page . "</span>";
-          else echo "<a href='list.php?" . $query_result ."'>" . $i . "</a>";
+      <%
+      if (pages > 1) {
+        for (Integer i = 1; i <= pages; i++) {
+          Integer pageNumber = (request.getParameter("page") != null) ? Integer.parseInt(request.getParameter("page")) : 1;
+          URI uri = new URIBuilder(request.getAttribute("javax.servlet.forward.request_uri")+"?"+request.getAttribute("javax.servlet.forward.query_string")).setParameter("page", i.toString()).build();
+          if (pageNumber == i) {
+      %>
+            <span><%= pageNumber %></span>
+      <% } else { %>
+            <a href="<%= uri.toString() %>"><%= i %></a>
+      <% }
         }
       }
-      ?>
+      %>
     </div>
   </ul>
 </div>

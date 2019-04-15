@@ -128,18 +128,21 @@ public class DataAd implements Serializable {
     ArrayList<Ad> ads = new ArrayList<Ad>();
     Integer pages = 0;
 		try {
-      String conditions = "WHERE classified_ads.ad.sold != false";
-      if (queryMap.get("name") != null) conditions += " AND (ad.name LIKE '%?%'  OR ad.description LIKE '%?%')";
+      String conditions = "WHERE classified_ads.ad.sold=false";
+      if (queryMap.get("name") != null) conditions += " AND (ad.name LIKE ? OR ad.description LIKE ?)";
       if (queryMap.get("subcategory") != null) conditions += " AND subcategory_id=?";
       if (queryMap.get("city") != null) conditions += " AND city_id=?";
-      if (queryMap.get("price1") != null && queryMap.get("price2") != null)
+      if (queryMap.get("price1") != null && queryMap.get("price1") != "" && queryMap.get("price2") != null && queryMap.get("price2") != "") {
         conditions += " AND price BETWEEN ? AND ?";
-      if (queryMap.get("price1") != null && queryMap.get("price1") != "") conditions += " AND price>=?";
-      if (queryMap.get("price2") != null && queryMap.get("price2") != "") conditions += " AND price<=?";
+      } else if (queryMap.get("price1") != null && queryMap.get("price1") != "") {
+        conditions += " AND price>=?";
+      } else if (queryMap.get("price2") != null && queryMap.get("price2") != "") {
+        conditions += " AND price<=?";
+      }
       Integer adsPerPage = 2;
       Integer page = (queryMap.get("page") != null) ? Integer.parseInt(queryMap.get("page")) : 1;
       Integer start = (page - 1) * adsPerPage;
-      conditions += " LIMIT " + adsPerPage.toString() + " OFFSET " + start.toString();
+      conditions += " LIMIT ? OFFSET ?";
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
         "SELECT classified_ads.ad.*, classified_ads.user.*, " +
         "classified_ads.subcategory.*, classified_ads.category.*, " +
@@ -153,11 +156,13 @@ public class DataAd implements Serializable {
         conditions
       );
       Integer countCondition = 1;
-      if (queryMap.get("name") != null) { stmt.setString(countCondition, queryMap.get("name")); countCondition++; }
-      if (queryMap.get("subcategory") != null) { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("subcategory"))); countCondition++; }
-      if (queryMap.get("city") != null) { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("city"))); countCondition++; }
-      if (queryMap.get("price1") != null && queryMap.get("price1") != "") { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("price1"))); countCondition++; }
-      if (queryMap.get("price2") != null && queryMap.get("price2") != "") { stmt.setInt(countCondition, Integer.parseInt(queryMap.get("price2"))); countCondition++; }
+      if (queryMap.get("name") != null) { stmt.setString(countCondition++, "%"+queryMap.get("name")+"%"); stmt.setString(countCondition++, "%"+queryMap.get("name")+"%"); }
+      if (queryMap.get("subcategory") != null) stmt.setInt(countCondition++, Integer.parseInt(queryMap.get("subcategory")));
+      if (queryMap.get("city") != null) stmt.setInt(countCondition++, Integer.parseInt(queryMap.get("city")));
+      if (queryMap.get("price1") != null && queryMap.get("price1") != "") stmt.setInt(countCondition++, Integer.parseInt(queryMap.get("price1")));
+      if (queryMap.get("price2") != null && queryMap.get("price2") != "") stmt.setInt(countCondition++, Integer.parseInt(queryMap.get("price2")));
+      stmt.setInt(countCondition++, adsPerPage);
+      stmt.setInt(countCondition++, start);
       rs = stmt.executeQuery();
 			if (rs != null) {
 				while(rs.next()){

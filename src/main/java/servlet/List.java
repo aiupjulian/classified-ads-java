@@ -27,7 +27,8 @@ public class List extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HashMap<String,String> queryMap = new HashMap<String,String>();
     for (Map.Entry<String,String[]> param : request.getParameterMap().entrySet()) {
-      if (request.getParameter(param.getKey()) != null) queryMap.put(param.getKey(), request.getParameter(param.getKey()));
+      if (request.getParameter(param.getKey()) != null && request.getParameter(param.getKey()) != "")
+        queryMap.put(param.getKey(), request.getParameter(param.getKey()));
     }
     try {
       AdController adController = new AdController();
@@ -35,13 +36,17 @@ public class List extends HttpServlet {
       ArrayList<Ad> ads = new ArrayList<Ad>();
       ads = dataAdsPages.getAds();
       Integer pages = dataAdsPages.getPages();
-      System.out.println(ads.toString());
-      System.out.println(pages.toString());
       request.setAttribute("ads", ads);
       request.setAttribute("pages", pages);
+      CategoryController categoryController = new CategoryController();
+      ArrayList<Category> categories = categoryController.getAllWithSubcategories();
+      request.setAttribute("categories", categories);
+      StateController stateController = new StateController();
+      ArrayList<State> states = stateController.getAllWithCities();
+      request.setAttribute("states", states);
       request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ServletException(e.getMessage());
     }
   }
 
