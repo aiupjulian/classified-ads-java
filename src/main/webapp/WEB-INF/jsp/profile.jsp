@@ -3,10 +3,10 @@
 <%@page import="java.lang.String" %>
 <%@page import="entity.User" %>
 <%@page import="entity.Ad" %>
-<% User user = (User)session.getAttribute("user"); %>
 <%
-	ArrayList<Ad> ads = new ArrayList<Ad>();
-	ads = (ArrayList<Ad>)request.getAttribute("ads");
+User user = (User)session.getAttribute("user");
+ArrayList<Ad> ads = new ArrayList<Ad>();
+ads = (ArrayList<Ad>)request.getAttribute("ads");
 %>
 <jsp:include page="./layout/header.jsp" />
 <style><%@ include file="../../css/profile.css" %></style>

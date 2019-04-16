@@ -87,7 +87,7 @@ public class DataAd implements Serializable {
       stmt.setInt(1, userId);
       rs = stmt.executeQuery();
 			if (rs != null) {
-				while(rs.next()){
+				while (rs.next()) {
 					Ad ad = new Ad();
           ad.setId(rs.getInt(1));
           ad.setName(rs.getString(2));
@@ -129,7 +129,7 @@ public class DataAd implements Serializable {
     Integer pages = 0;
 		try {
       String conditions = "WHERE classified_ads.ad.sold=false";
-      if (queryMap.get("name") != null) conditions += " AND (ad.name LIKE ? OR ad.description LIKE ?)";
+      if (queryMap.get("name") != null) conditions += " AND (ad.name ILIKE ? OR ad.description ILIKE ?)";
       if (queryMap.get("subcategory") != null) conditions += " AND subcategory_id=?";
       if (queryMap.get("city") != null) conditions += " AND city_id=?";
       if (queryMap.get("price1") != null && queryMap.get("price1") != "" && queryMap.get("price2") != null && queryMap.get("price2") != "") {

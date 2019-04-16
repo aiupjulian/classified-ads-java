@@ -31,10 +31,10 @@ import com.uploadcare.upload.UploadFailureException;
 
 @MultipartConfig()
 @WebServlet(urlPatterns = { "/sell", "/sell.jsp" })
-public class Sell extends HttpServlet {
+public class SellServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Sell() {
+  public SellServlet() {
     super();
   }
 

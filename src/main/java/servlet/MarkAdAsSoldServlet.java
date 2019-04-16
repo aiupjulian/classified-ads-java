@@ -1,7 +1,8 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,30 +13,32 @@ import javax.servlet.http.HttpSession;
 import controller.*;
 import entity.*;
 import util.ApplicationException;
-
-@WebServlet(urlPatterns = {"/profile", "/profile.jsp"})
-public class Profile extends HttpServlet {
+@WebServlet(urlPatterns = {"/markAdAsSold", "/markAdAsSold.jsp"})
+public class MarkAdAsSoldServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Profile() {
+  public MarkAdAsSoldServlet() {
     super();
   }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
-    if (session != null && session.getAttribute("user") != null) {
+    String stringAdId = request.getParameter("id");
+    if (session != null && session.getAttribute("user") != null && stringAdId != null) {
+      Integer adId = Integer.parseInt(stringAdId);
+      Integer userId = ((User)session.getAttribute("user")).getId();
+      AdController adController = new AdController();
       try {
-        AdController adController = new AdController();
-        ArrayList<Ad> ads = new ArrayList<Ad>();
-        ads = adController.getAllByUser(((User)session.getAttribute("user")).getId());
-        request.setAttribute("ads", ads);
-        request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
-      } catch (Exception e) {
-        e.printStackTrace();
+        adController.markAdAsSold(adId, userId);
+        response.sendRedirect("/profile.jsp");
+      } catch (SQLException e) {
+        throw new ServletException(e.getMessage());
+      } catch (ApplicationException ae){
+        throw new ServletException(ae.getMessage());
       }
     } else {
-      response.sendRedirect("/login.jsp");
+      response.sendRedirect("/index.jsp");
     }
   }
 

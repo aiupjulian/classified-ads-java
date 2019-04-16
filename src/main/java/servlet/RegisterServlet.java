@@ -13,10 +13,10 @@ import entity.*;
 import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/register", "/register.jsp"})
-public class Register extends HttpServlet {
+public class RegisterServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Register() {
+  public RegisterServlet() {
     super();
   }
 

@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import controller.*;
 import entity.*;
 @WebServlet(urlPatterns = {"/index", "/index.jsp"})
-public class Index extends HttpServlet {
+public class IndexServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Index() {
+  public IndexServlet() {
     super();
   }
 

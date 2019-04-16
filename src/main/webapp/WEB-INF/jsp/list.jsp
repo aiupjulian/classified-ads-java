@@ -94,7 +94,8 @@ Integer cityId = (request.getParameter("city") != null && request.getParameter("
       if (pages > 1) {
         for (Integer i = 1; i <= pages; i++) {
           Integer pageNumber = (request.getParameter("page") != null) ? Integer.parseInt(request.getParameter("page")) : 1;
-          URI uri = new URIBuilder(request.getAttribute("javax.servlet.forward.request_uri")+"?"+request.getAttribute("javax.servlet.forward.query_string")).setParameter("page", i.toString()).build();
+          String query = (request.getAttribute("javax.servlet.forward.query_string") != null) ? "?"+request.getAttribute("javax.servlet.forward.query_string") : "";
+          URI uri = new URIBuilder(request.getAttribute("javax.servlet.forward.request_uri")+query).setParameter("page", i.toString()).build();
           if (pageNumber == i) {
       %>
             <span><%= pageNumber %></span>

@@ -13,10 +13,10 @@ import entity.*;
 import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/login", "/login.jsp"})
-public class Login extends HttpServlet {
+public class LoginServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public Login() {
+  public LoginServlet() {
     super();
   }
 
