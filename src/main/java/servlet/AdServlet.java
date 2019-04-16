@@ -38,12 +38,20 @@ public class AdServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    super.doPost(request, response);
+    String text = request.getParameter("text");
+    if (text == null || text == "") {
+      request.setAttribute("emailError", "Por favor complete el mensaje.");
+      request.getRequestDispatcher("/WEB-INF/jsp/ad.jsp").forward(request, response);
+    }
+    if (request.getParameter("email") != null) {
+
+    }
+    if (request.getParameter("comment") != null) {
+
+    }
   }
 }
 
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//   $text = mysqli_real_escape_string($link, $_POST['text']);
 //   // calculate current date
 //   $date_array = getdate();
 //   $date = $date_array['year'] . "-" . $date_array['mon'] . "-" . $date_array['mday'];
@@ -86,15 +94,5 @@ public class AdServlet extends HttpServlet {
 //       //if (!mail($ad_user_email, 'User ' .  $_SESSION['username'] . 'offered in ' . $name, $message)) {
 //     // $email_error = "Hubo un error al intentar enviar el email.";
 //       //}
-//     }
-//   } else if (isset($_POST['comment'])) {
-//     if ($text == '') {
-//        $comment_error = 'Por favor complete el mensaje.';
-//     }
-//     if (!isset($comment_error)) {
-//       $query = "INSERT INTO comment (ad_id, user_id, text, date) VALUES ('$ad_id', '$user_id', '$text', '$date')";
-//       if (!mysqli_query($link, $query)) {
-//         $comment_error = "Hubo un error al intentar crear el mensaje.";
-//       }
 //     }
 //   }

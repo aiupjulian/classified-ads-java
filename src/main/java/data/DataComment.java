@@ -9,6 +9,9 @@ import java.sql.*;
 import entity.*;
 import util.*;
 
+// java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+// ad.setDate(date.toString());
+
 public class DataComment implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -55,5 +58,41 @@ public class DataComment implements Serializable {
 		}
 
 		return comments;
+  }
+
+  public Ad createComment(Comment comment) throws ApplicationException {
+    ResultSet rs = null;
+    PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+        "INSERT INTO classified_ads.comment (ad_id, user_id, text, date) VALUES (?, ?, ?, ?) RETURNING id"
+      );
+      java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+      comment.setDate(date.toString());
+      stmt.setInt(1, comment.getPrice());
+      stmt.setInt(2, comment.getPrice());
+      stmt.setString(3, comment.getName());
+      stmt.setDate(4, date);
+      rs = stmt.executeQuery();
+      if (rs != null && rs.next()) {
+        comment.setId(rs.getInt(1));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new ApplicationException(e, "Hubo un error al intentar crear el aviso.");
+    } catch (ApplicationException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (ApplicationException e) {
+        e.printStackTrace();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return comment;
   }
 }
