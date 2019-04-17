@@ -58,4 +58,96 @@ public class DataState implements Serializable {
 
 		return states;
 	}
+
+	public State getById(Integer stateId) throws SQLException, ApplicationException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		State state = new State();
+		try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("SELECT * FROM classified_ads.state WHERE id=?");
+      stmt.setInt(1, stateId);
+      rs = stmt.executeQuery();
+			if (rs != null && rs.next()){
+				state.setId(stateId);
+        state.setName(rs.getString("name"));
+      } else {
+        throw new ApplicationException("No se encontró la provincia especificada.");
+      }
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		}
+
+		try {
+			if (rs!=null) rs.close();
+			if (stmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		}
+
+		return state;
+	}
+
+	public void create(State state) throws SQLException, ApplicationException {
+		ResultSet rs = null;
+    PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("INSERT INTO classified_ads.state (name) VALUES (?)");
+      stmt.setString(1, state.getName());
+      rs = stmt.executeQuery();
+    } catch (SQLException e) {
+      throw new ApplicationException(e, "Hubo un error al intentar crear la provincia.");
+    } finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
+    }
+	}
+
+	public void update(State state) throws SQLException, ApplicationException {
+		PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("UPDATE classified_ads.state SET name=? WHERE ?");
+      stmt.setString(1, ad.getName());
+      Boolean success = stmt.executeUpdate() != 0;
+      if (!success) {
+        throw new ApplicationException("No se encontró la provincia a editar.");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new ApplicationException(e, "Hubo un error al intentar editar el aviso.");
+    } finally {
+      try {
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
+    }
+	}
+
+	public void delete(Integer stateId) throws SQLException, ApplicationException {
+    PreparedStatement stmt = null;
+		try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("DELETE FROM classified_ads.state WHERE id=?");
+      stmt.setInt(1, stateId);
+      Boolean success = stmt.executeUpdate() != 0;
+      if (!success) {
+        throw new ApplicationException("No se encontró la provincia a eliminar.");
+      }
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		}
+
+		try {
+			if (stmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		}
+  }
 }

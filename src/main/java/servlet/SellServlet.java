@@ -50,7 +50,7 @@ public class SellServlet extends HttpServlet {
       try {
         String stringAdId = request.getParameter("id");
         if (stringAdId != null) {
-          Integer adId = Integer.parseInt(request.getParameter("id"));
+          Integer adId = Integer.parseInt(stringAdId);
           AdController adController = new AdController();
           Ad ad = adController.getById(adId);
           request.setAttribute("ad", ad);
@@ -119,7 +119,7 @@ public class SellServlet extends HttpServlet {
           }
           String stringAdId = request.getParameter("id");
           if (stringAdId != null) {
-            ad.setId(Integer.parseInt(request.getParameter("id")));
+            ad.setId(Integer.parseInt(stringAdId));
             adController.updateAd(ad);
           } else {
             if (image == "") {

@@ -14,7 +14,7 @@ if (request.getAttribute("ad") != null) {
 }
 %>
 <jsp:include page="./layout/header.jsp" />
-<h2 class="form-title">Crear Aviso</h2>
+<h2 class="form-title"><%= buttonText %> Aviso</h2>
 <form action="" method="post" class="form" enctype="multipart/form-data">
   <label for="name">Nombre del aviso:<span class="required"> (*)</span></label>
   <% if (ad == null) { %><input type="text" name="name" maxlength="15" required>

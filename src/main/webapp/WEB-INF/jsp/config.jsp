@@ -2,9 +2,9 @@
 <jsp:include page="./layout/header.jsp" />
 <h2 class="form-title">Configuración</h2>
 <div class="form">
-  <a href="state.jsp">Provincias</a>
-  <a href="city.jsp">Ciudades</a>
-  <a href="category.jsp">Categorías</a>
-  <a href="subcategory.jsp">Subcategorías</a>
+  <a href="states.jsp">Provincias</a>
+  <a href="cities.jsp">Ciudades</a>
+  <a href="categories.jsp">Categorías</a>
+  <a href="subcategories.jsp">Subcategorías</a>
 </div>
 <jsp:include page="./layout/footer.jsp" />
