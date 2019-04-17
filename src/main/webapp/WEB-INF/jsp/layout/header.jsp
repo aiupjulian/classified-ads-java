@@ -32,7 +32,10 @@
         <%
           User user = (User)session.getAttribute("user");
           if (user != null) {
+            if (user.getAdmin()) {
         %>
+              <a href="config.jsp">Configuración</a>
+            <% } %>
           <a href="sell.jsp">Vender</a>
           <a href="profile.jsp">Perfil (<%= user.getUsername() %>)</a>
           <a href="logout.jsp">Logout</a>

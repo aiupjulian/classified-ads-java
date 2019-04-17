@@ -2,15 +2,11 @@ package data;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.io.Serializable;
 import java.sql.*;
 
 import entity.*;
 import util.*;
-
-// java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-// ad.setDate(date.toString());
 
 public class DataComment implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -60,7 +56,7 @@ public class DataComment implements Serializable {
 		return comments;
   }
 
-  public Ad createComment(Comment comment) throws ApplicationException {
+  public Comment createComment(Comment comment) throws ApplicationException {
     ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
@@ -69,9 +65,9 @@ public class DataComment implements Serializable {
       );
       java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
       comment.setDate(date.toString());
-      stmt.setInt(1, comment.getPrice());
-      stmt.setInt(2, comment.getPrice());
-      stmt.setString(3, comment.getName());
+      stmt.setInt(1, comment.getAd().getId());
+      stmt.setInt(2, comment.getUser().getId());
+      stmt.setString(3, comment.getText());
       stmt.setDate(4, date);
       rs = stmt.executeQuery();
       if (rs != null && rs.next()) {

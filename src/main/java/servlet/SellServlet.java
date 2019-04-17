@@ -128,7 +128,6 @@ public class SellServlet extends HttpServlet {
             ad.setUser((User)session.getAttribute("user"));
             ad = adController.createAd(ad);
           }
-          request.getSession().setAttribute("ad", ad);
           response.sendRedirect("/ad.jsp?id=" + ad.getId());
         } catch (ApplicationException | UploadFailureException e) {
           throw new ServletException(e.getMessage());

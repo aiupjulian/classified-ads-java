@@ -1,5 +1,9 @@
 package servlet;
 
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -8,14 +12,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import entity.*;
 import controller.*;
 import util.*;
 
-@WebServlet(urlPatterns = {"/ad", "/ad.jsp"})
+@WebServlet(urlPatterns = { "/ad", "/ad.jsp" })
 public class AdServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
+  private static String USER_NAME = "***";
+  private static String PASSWORD = "***";
 
   public AdServlet() {
     super();
@@ -38,61 +45,88 @@ public class AdServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String text = request.getParameter("text");
-    if (text == null || text == "") {
-      request.setAttribute("emailError", "Por favor complete el mensaje.");
+    HttpSession session = request.getSession(false);
+    if (session == null || session.getAttribute("user") == null) {
       request.getRequestDispatcher("/WEB-INF/jsp/ad.jsp").forward(request, response);
+    } else {
+      try {
+        User user = (User)session.getAttribute("user");
+        String text = request.getParameter("text");
+        if (request.getParameter("email") != null) {
+          if (text == null || text == "") {
+            request.setAttribute("emailError", "Por favor complete el mensaje.");
+            request.getRequestDispatcher("/WEB-INF/jsp/ad.jsp").forward(request, response);
+          } else {
+            AdController adController = new AdController();
+            Ad ad = adController.getById(Integer.parseInt(request.getParameter("id")));
+            String from = USER_NAME;
+            String pass = PASSWORD;
+            String[] to = { ad.getUser().getEmail() }; // list of recipient email addresses
+            String subject = "El usuario "+user.getUsername()+" ha ofertado en el aviso "+ad.getName();
+            String body = text+"\r\n\r\nUsuario que oferta: "+user.getName()+"\r\nSu telefono: "+user.getPhone()+"\r\nSu email: "+user.getEmail();
+            sendFromGMail(from, pass, to, subject, body);
+            response.sendRedirect("/ad.jsp?id=" + ad.getId());
+          }
+        } else if (request.getParameter("comment") != null) {
+          if (text == null || text == "") {
+            request.setAttribute("commentError", "Por favor complete el mensaje.");
+            request.getRequestDispatcher("/WEB-INF/jsp/ad.jsp").forward(request, response);
+          } else {
+            Comment comment = new Comment();
+            comment.setText(text);
+            comment.setUser(user);
+            Ad ad = new Ad();
+            ad.setId(Integer.parseInt(request.getParameter("id")));
+            comment.setAd(ad);
+            CommentController commentController = new CommentController();
+            commentController.createComment(comment);
+            response.sendRedirect("/ad.jsp?id=" + ad.getId());
+          }
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
-    if (request.getParameter("email") != null) {
+  }
 
+  private static void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
+    Properties props = System.getProperties();
+    String host = "smtp.gmail.com";
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", host);
+    props.put("mail.smtp.user", from);
+    props.put("mail.smtp.password", pass);
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.auth", "true");
+
+    Session session = Session.getDefaultInstance(props);
+    MimeMessage message = new MimeMessage(session);
+
+    try {
+        message.setFrom(new InternetAddress(from));
+        InternetAddress[] toAddress = new InternetAddress[to.length];
+
+        // To get the array of addresses
+        for( int i = 0; i < to.length; i++ ) {
+            toAddress[i] = new InternetAddress(to[i]);
+        }
+
+        for( int i = 0; i < toAddress.length; i++) {
+            message.addRecipient(Message.RecipientType.TO, toAddress[i]);
+        }
+
+        message.setSubject(subject);
+        message.setText(body);
+        Transport transport = session.getTransport("smtp");
+        transport.connect(host, from, pass);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
     }
-    if (request.getParameter("comment") != null) {
-
+    catch (AddressException ae) {
+        ae.printStackTrace();
+    }
+    catch (MessagingException me) {
+        me.printStackTrace();
     }
   }
 }
-
-//   // calculate current date
-//   $date_array = getdate();
-//   $date = $date_array['year'] . "-" . $date_array['mon'] . "-" . $date_array['mday'];
-//   $user_id = $_SESSION['id'];
-//   if (isset($_POST['email'])) {
-//     if ($text == '') {
-//        $email_error = 'Por favor complete el mensaje.';
-//     }
-//     if (!isset($email_error)) {
-//       $new_text = str_replace('\r\n', '<br />', $text);
-//       $message = $new_text . '<br /><br />Usuario que oferta: ' . $_SESSION['username'] . '<br />En la fecha: ' . $date . '<br />Email del usuario que oferta: ' . $_SESSION['email'];
-//       $message = wordwrap($message, 70, "<br />");
-//         date_default_timezone_set('Etc/UTC');
-//         require_once(TEMPLATES_PATH . '/PHPMailer/PHPMailerAutoload.php');
-//         $mail = new PHPMailer;
-//         $mail->isSMTP();
-//         $mail->Host = 'smtp.gmail.com'; // Which SMTP server to use.
-//         $mail->Port = 587; // Which port to use, 587 is the default port for TLS security.
-//         $mail->SMTPSecure = 'tls'; // Which security method to use. TLS is most secure.
-//         $mail->SMTPAuth = true; // Whether you need to login. This is almost always required.
-//         $mail->Username = "classifiedadsml@gmail.com"; // Your Gmail address.
-//         $mail->Password = "Lima-Limon505"; // Your Gmail login password or App Specific Password.
-//         $mail->setFrom('classifiedadsml@gmail.com', 'Classified Ads'); // Set the sender of the message.
-//         $mail->addAddress($ad_user_email, $ad_user_name); // Set the recipient of the message.
-//         $mail->Subject = 'El usuario ' .  $_SESSION['username'] . ' ha ofertado en el aviso ' . $name; // The subject of the message.
-//         // Choose to send either a simple text email...
-//         //$mail->Body = $message; // Set a plain text body.
-//         // ... or send an email with HTML.
-//         $mail->msgHTML($message);
-//         // Optional when using HTML: Set an alternative plain text message for email clients who prefer that.
-//         //$mail->AltBody = 'This is a plain-text message body'; 
-//         // Optional: attach a file
-//         // $mail->addAttachment('images/phpmailer_mini.png');
-//         if ($mail->send()) {}
-//         //if ($mail->send()) {
-//         //    echo "Your message was sent successfully!";
-//         //} else {
-//         //    echo "Mailer Error: " . $mail->ErrorInfo;
-//         //}
-//       //if (!mail($ad_user_email, 'User ' .  $_SESSION['username'] . 'offered in ' . $name, $message)) {
-//     // $email_error = "Hubo un error al intentar enviar el email.";
-//       //}
-//     }
-//   }

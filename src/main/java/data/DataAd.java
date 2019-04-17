@@ -165,8 +165,11 @@ public class DataAd implements Serializable {
       stmt.setInt(countCondition++, start);
       rs = stmt.executeQuery();
 			if (rs != null) {
-				while(rs.next()){
-          if (pages == 0) pages = (int)Math.ceil(rs.getInt("total_count") / adsPerPage);
+				while (rs.next()) {
+          if (pages == 0) {
+            double doublePages = (double)rs.getInt("total_count")/(double)adsPerPage;
+            pages = (int)Math.ceil(doublePages);
+          }
 					Ad ad = new Ad();
           ad.setId(rs.getInt(1));
           ad.setName(rs.getString(2));
