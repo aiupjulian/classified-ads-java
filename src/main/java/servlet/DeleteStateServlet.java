@@ -25,7 +25,7 @@ public class DeleteStateServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
     String stringStateId = request.getParameter("id");
-    if (session != null && session.getAttribute("user") != null && session.getAttribute("user").getAdmin() && stringStateId != null) {
+    if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin() && stringStateId != null) {
       try {
         Integer stateId = Integer.parseInt(stringStateId);
         StateController stateController = new StateController();

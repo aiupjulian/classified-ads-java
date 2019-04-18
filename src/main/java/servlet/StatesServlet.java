@@ -36,7 +36,7 @@ public class StatesServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
-    if (session != null && session.getAttribute("user") != null && session.getAttribute("user").getAdmin()) {
+    if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       try {
         StateController stateController = new StateController();
         ArrayList<State> states = stateController.getAllWithCities();

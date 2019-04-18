@@ -32,7 +32,7 @@ public class StateServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
-    if (session != null && session.getAttribute("user") != null && session.getAttribute("user").getAdmin()) {
+    if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       try {
         String stringStateId = request.getParameter("id");
         if (stringStateId != null) {
@@ -53,7 +53,7 @@ public class StateServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession(false);
-    if (session != null && session.getAttribute("user") != null && session.getAttribute("user").getAdmin()) {
+    if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       String error = "";
       String name = request.getParameter("name");
       if (name == "") {
@@ -70,7 +70,7 @@ public class StateServlet extends HttpServlet {
             state.setId(Integer.parseInt(stringStateId));
             stateController.update(state);
           } else {
-            state = stateController.create(state);
+            stateController.create(state);
           }
           response.sendRedirect("/states.jsp");
         } catch (Exception e) {

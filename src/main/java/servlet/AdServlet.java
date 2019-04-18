@@ -21,8 +21,8 @@ import util.*;
 @WebServlet(urlPatterns = { "/ad", "/ad.jsp" })
 public class AdServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  private static String USER_NAME = "***";
-  private static String PASSWORD = "***";
+  private static String USER_NAME = "classifiedadsml";
+  private static String PASSWORD = "Lima-Limon505";
 
   public AdServlet() {
     super();

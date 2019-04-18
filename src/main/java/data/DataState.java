@@ -94,7 +94,7 @@ public class DataState implements Serializable {
     try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement("INSERT INTO classified_ads.state (name) VALUES (?)");
       stmt.setString(1, state.getName());
-      rs = stmt.executeQuery();
+      stmt.executeUpdate();
     } catch (SQLException e) {
       throw new ApplicationException(e, "Hubo un error al intentar crear la provincia.");
     } finally {
@@ -111,15 +111,15 @@ public class DataState implements Serializable {
 	public void update(State state) throws SQLException, ApplicationException {
 		PreparedStatement stmt = null;
     try {
-      stmt = FactoryConnection.getInstance().getConn().prepareStatement("UPDATE classified_ads.state SET name=? WHERE ?");
-      stmt.setString(1, ad.getName());
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("UPDATE classified_ads.state SET name=? WHERE id=?");
+			stmt.setString(1, state.getName());
+			stmt.setInt(2, state.getId());
       Boolean success = stmt.executeUpdate() != 0;
       if (!success) {
         throw new ApplicationException("No se encontró la provincia a editar.");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      throw new ApplicationException(e, "Hubo un error al intentar editar el aviso.");
+      throw new ApplicationException(e, "Hubo un error al intentar editar la provincia.");
     } finally {
       try {
         if (stmt != null) stmt.close();
