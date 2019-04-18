@@ -18,6 +18,7 @@ body {
   border-radius: 4px;
   padding: 1vh 2vw;
   cursor: pointer;
+  text-align: center;
 }
 
 .container {
@@ -40,6 +41,15 @@ body {
   justify-content: space-between;
 }
 
+.form-config {
+  width: 60%;
+}
+
+.form-config > .create {
+  width: 25%;
+  margin: 0 auto 23px;
+}
+
 .form > input {
   margin-bottom: 10px;
 }
@@ -54,13 +64,19 @@ body {
   color: red;
 }
 
-.config-list {
-  border-bottom: 1px solid #aaa;
-  display: flex;
-  justify-content: space-between;
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
 }
 
-.config-list > .actions {
-  display: flex;
-  justify-content: space-around;
+th {
+  text-align: left;
+}
+
+th, td {
+  padding: 10px;
+}
+
+td.action {
+  text-align: center;
 }

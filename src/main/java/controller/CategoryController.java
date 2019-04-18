@@ -18,18 +18,18 @@ public class CategoryController {
 	}
 
 	public Category getById(Integer categoryId) throws Exception {
-		return dataState.getById(categoryId);
+		return dataCategory.getById(categoryId);
 	}
 
 	public void create(Category category) throws Exception {
-		dataState.create(category);
+		dataCategory.create(category);
 	}
 
 	public void update(Category category) throws Exception {
-		dataState.update(category);
+		dataCategory.update(category);
 	}
 
 	public void delete(Integer categoryId) throws Exception {
-		dataState.delete(categoryId);
+		dataCategory.delete(categoryId);
 	}
 }
