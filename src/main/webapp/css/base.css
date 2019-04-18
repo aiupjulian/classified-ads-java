@@ -53,3 +53,14 @@ body {
 .required {
   color: red;
 }
+
+.config-list {
+  border-bottom: 1px solid #aaa;
+  display: flex;
+  justify-content: space-between;
+}
+
+.config-list > .actions {
+  display: flex;
+  justify-content: space-around;
+}

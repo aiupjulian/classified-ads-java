@@ -21,11 +21,11 @@ import entity.*;
 import util.ApplicationException;
 
 @MultipartConfig()
-@WebServlet(urlPatterns = { "/states", "/states.jsp" })
-public class StatesServlet extends HttpServlet {
+@WebServlet(urlPatterns = { "/categories", "/categories.jsp" })
+public class CategoriesServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public StatesServlet() {
+  public CategoriesServlet() {
     super();
   }
 
@@ -34,10 +34,10 @@ public class StatesServlet extends HttpServlet {
     HttpSession session = request.getSession(false);
     if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       try {
-        StateController stateController = new StateController();
-        ArrayList<State> states = stateController.getAllWithCities();
-        request.setAttribute("states", states);
-        request.getRequestDispatcher("/WEB-INF/jsp/states.jsp").forward(request, response);
+        CategoryController categoryController = new CategoryController();
+        ArrayList<Category> categories = categoryController.getAllWithSubcategories();
+        request.setAttribute("categories", categories);
+        request.getRequestDispatcher("/WEB-INF/jsp/categories.jsp").forward(request, response);
       } catch (Exception e) {
         throw new ServletException(e.getMessage());
       }

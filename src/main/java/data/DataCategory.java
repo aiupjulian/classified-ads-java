@@ -63,4 +63,96 @@ public class DataCategory implements Serializable {
 
 		return categories;
 	}
+
+	public Category getById(Integer categoryId) throws SQLException, ApplicationException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Category category = new Category();
+		try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("SELECT * FROM classified_ads.category WHERE id=?");
+      stmt.setInt(1, categoryId);
+      rs = stmt.executeQuery();
+			if (rs != null && rs.next()){
+				category.setId(categoryId);
+        category.setName(rs.getString("name"));
+      } else {
+        throw new ApplicationException("No se encontró la categoría especificada.");
+      }
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		}
+
+		try {
+			if (rs!=null) rs.close();
+			if (stmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		}
+
+		return category;
+	}
+
+	public void create(Category category) throws SQLException, ApplicationException {
+		ResultSet rs = null;
+    PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("INSERT INTO classified_ads.category (name) VALUES (?)");
+      stmt.setString(1, category.getName());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new ApplicationException(e, "Hubo un error al intentar crear la categoría.");
+    } finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
+    }
+	}
+
+	public void update(Category category) throws SQLException, ApplicationException {
+		PreparedStatement stmt = null;
+    try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("UPDATE classified_ads.category SET name=? WHERE id=?");
+			stmt.setString(1, category.getName());
+			stmt.setInt(2, category.getId());
+      Boolean success = stmt.executeUpdate() != 0;
+      if (!success) {
+        throw new ApplicationException("No se encontró la categoría a editar.");
+      }
+    } catch (SQLException e) {
+      throw new ApplicationException(e, "Hubo un error al intentar editar la categoría.");
+    } finally {
+      try {
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
+    }
+	}
+
+	public void delete(Integer categoryId) throws SQLException, ApplicationException {
+    PreparedStatement stmt = null;
+		try {
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("DELETE FROM classified_ads.category WHERE id=?");
+      stmt.setInt(1, categoryId);
+      Boolean success = stmt.executeUpdate() != 0;
+      if (!success) {
+        throw new ApplicationException("No se encontró la categoría a eliminar.");
+      }
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		}
+
+		try {
+			if (stmt!=null) stmt.close();
+			FactoryConnection.getInstance().releaseConn();
+		} catch (SQLException e) {
+			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		}
+  }
 }

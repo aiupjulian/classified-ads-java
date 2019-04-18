@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import controller.*;
 import entity.*;
 import util.ApplicationException;
+
 @WebServlet(urlPatterns = {"/deleteState", "/deleteState.jsp"})
 public class DeleteStateServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
