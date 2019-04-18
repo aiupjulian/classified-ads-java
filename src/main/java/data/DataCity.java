@@ -29,8 +29,8 @@ public class DataCity implements Serializable {
 					state.setId(rs.getInt("state_id"));
 					state.setName(rs.getString("state_name"));
 					City city = new City();
-					city.setId(rs.getInt("id"));
-					city.setName(rs.getString("name"));
+					city.setId(rs.getInt("city_id"));
+					city.setName(rs.getString("city_name"));
 					city.setState(state);
 					cities.add(city);
 				}
@@ -61,7 +61,7 @@ public class DataCity implements Serializable {
 				"SELECT city.id AS city_id, city.name AS city_name, state.id AS state_id, state.name AS state_name"
 				+" FROM classified_ads.city"
 				+" INNER JOIN classified_ads.state ON classified_ads.city.state_id=classified_ads.state.id"
-				+" WHERE id=?"
+				+" WHERE city.id=?"
 			);
       stmt.setInt(1, cityId);
       rs = stmt.executeQuery();
@@ -69,8 +69,8 @@ public class DataCity implements Serializable {
 				State state = new State();
 				state.setId(rs.getInt("state_id"));
 				state.setName(rs.getString("state_name"));
-				city.setId(rs.getInt("id"));
-				city.setName(rs.getString("name"));
+				city.setId(rs.getInt("city_id"));
+				city.setName(rs.getString("city_name"));
 				city.setState(state);
       } else {
         throw new ApplicationException("No se encontró la ciudad especificada.");
@@ -98,7 +98,7 @@ public class DataCity implements Serializable {
 				"INSERT INTO classified_ads.city (name, state_id) VALUES (?, ?)"
 			);
       stmt.setString(1, city.getName());
-      stmt.setInt(1, city.getState().getId());
+      stmt.setInt(2, city.getState().getId());
       stmt.executeUpdate();
     } catch (SQLException e) {
       throw new ApplicationException(e, "Hubo un error al intentar crear la ciudad.");
@@ -117,7 +117,7 @@ public class DataCity implements Serializable {
 		PreparedStatement stmt = null;
     try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-				"UPDATE classified_ads.state SET name=?, state_id=? WHERE id=?"
+				"UPDATE classified_ads.city SET name=?, state_id=? WHERE id=?"
 			);
 			stmt.setString(1, city.getName());
 			stmt.setInt(2, city.getState().getId());

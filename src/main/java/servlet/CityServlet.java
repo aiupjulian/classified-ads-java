@@ -21,11 +21,11 @@ import entity.*;
 import util.ApplicationException;
 
 @MultipartConfig()
-@WebServlet(urlPatterns = { "/state", "/state.jsp" })
-public class StateServlet extends HttpServlet {
+@WebServlet(urlPatterns = { "/city", "/city.jsp" })
+public class CityServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  public StateServlet() {
+  public CityServlet() {
     super();
   }
 
@@ -34,14 +34,17 @@ public class StateServlet extends HttpServlet {
     HttpSession session = request.getSession(false);
     if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       try {
-        String stringStateId = request.getParameter("id");
-        if (stringStateId != null) {
-          Integer stateId = Integer.parseInt(stringStateId);
-          StateController stateController = new StateController();
-          State state = stateController.getById(stateId);
-          request.setAttribute("state", state);
+        String stringCityId = request.getParameter("id");
+        if (stringCityId != null) {
+          Integer cityId = Integer.parseInt(stringCityId);
+          CityController cityController = new CityController();
+          City city = cityController.getById(cityId);
+          request.setAttribute("city", city);
         }
-        request.getRequestDispatcher("/WEB-INF/jsp/state.jsp").forward(request, response);
+        StateController stateController = new StateController();
+        ArrayList<State> states = stateController.getAllWithCities();
+        request.setAttribute("states", states);
+        request.getRequestDispatcher("/WEB-INF/jsp/city.jsp").forward(request, response);
       } catch (Exception e) {
         throw new ServletException(e.getMessage());
       }
@@ -56,23 +59,28 @@ public class StateServlet extends HttpServlet {
     if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       String error = "";
       String name = request.getParameter("name");
-      if (name == "") {
+      String stringStateId = request.getParameter("state");
+      if (name == "" || stringStateId == "") {
         error = "Por favor complete todos los campos requeridos.";
         request.setAttribute("error", error);
-        request.getRequestDispatcher("/WEB-INF/jsp/state.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/jsp/city.jsp").forward(request, response);
       } else {
         try {
-          StateController stateController = new StateController();
+          Integer stateId = Integer.parseInt(stringStateId);
+          CityController cityController = new CityController();
+          City city = new City();
+          city.setName(name);
           State state = new State();
-          state.setName(name);
-          String stringStateId = request.getParameter("id");
-          if (stringStateId != null) {
-            state.setId(Integer.parseInt(stringStateId));
-            stateController.update(state);
+          state.setId(stateId);
+          city.setState(state);
+          String stringCityId = request.getParameter("id");
+          if (stringCityId != null) {
+            city.setId(Integer.parseInt(stringCityId));
+            cityController.update(city);
           } else {
-            stateController.create(state);
+            cityController.create(city);
           }
-          response.sendRedirect("/states.jsp");
+          response.sendRedirect("/cities.jsp");
         } catch (Exception e) {
           throw new ServletException(e.getMessage());
         }

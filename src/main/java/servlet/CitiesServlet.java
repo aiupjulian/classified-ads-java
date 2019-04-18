@@ -30,7 +30,7 @@ public class CitiesServlet extends HttpServlet {
     if (session != null && session.getAttribute("user") != null && ((User)session.getAttribute("user")).getAdmin()) {
       try {
         CityController cityController = new CityController();
-        ArrayList<State> cities = cityController.getAll();
+        ArrayList<City> cities = cityController.getAll();
         request.setAttribute("cities", cities);
         request.getRequestDispatcher("/WEB-INF/jsp/cities.jsp").forward(request, response);
       } catch (Exception e) {
