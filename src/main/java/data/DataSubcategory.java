@@ -12,7 +12,7 @@ public class DataSubcategory implements Serializable {
 
   public DataSubcategory() {}
 
-  public ArrayList<Subcategory> getAll() throws Exception {
+  public ArrayList<Subcategory> getAll() throws ApplicationException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		ArrayList<Subcategory> subcategories = new ArrayList<Subcategory>();
@@ -36,23 +36,21 @@ public class DataSubcategory implements Serializable {
 				}
 			}
 		} catch (SQLException e) {
-			throw e;
-		} catch (ApplicationException ae){
-			throw ae;
-		}
-
-		try {
-			if (rs != null) rs.close();
-			if (stmt != null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
 
 		return subcategories;
 	}
 
-	public Subcategory getById(Integer subcategoryId) throws SQLException, ApplicationException {
+	public Subcategory getById(Integer subcategoryId) throws ApplicationException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Subcategory subcategory = new Subcategory();
@@ -77,20 +75,20 @@ public class DataSubcategory implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+			try {
+				if (rs!=null) rs.close();
+				if (stmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
 
 		return subcategory;
 	}
 
-	public void create(Subcategory subcategory) throws SQLException, ApplicationException {
+	public void create(Subcategory subcategory) throws ApplicationException {
 		ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
@@ -113,7 +111,7 @@ public class DataSubcategory implements Serializable {
     }
 	}
 
-	public void update(Subcategory subcategory) throws SQLException, ApplicationException {
+	public void update(Subcategory subcategory) throws ApplicationException {
 		PreparedStatement stmt = null;
     try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
@@ -138,7 +136,7 @@ public class DataSubcategory implements Serializable {
     }
 	}
 
-	public void delete(Integer subcategoryId) throws SQLException, ApplicationException {
+	public void delete(Integer subcategoryId) throws ApplicationException {
     PreparedStatement stmt = null;
 		try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement("DELETE FROM classified_ads.subcategory WHERE id=?");
@@ -149,13 +147,13 @@ public class DataSubcategory implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+			try {
+				if (stmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
   }
 }

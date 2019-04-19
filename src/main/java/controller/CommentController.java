@@ -1,6 +1,5 @@
 package controller;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import data.DataComment;
@@ -18,7 +17,7 @@ public class CommentController {
 		return dataComment.createComment(comment);
 	}
 
-	public ArrayList<Comment> getAllByAdId(Integer adId) throws SQLException, ApplicationException {
+	public ArrayList<Comment> getAllByAdId(Integer adId) throws ApplicationException {
 		return dataComment.getAllByAdId(adId);
 	}
 }

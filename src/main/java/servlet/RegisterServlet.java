@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/register", "/register.jsp"})
 public class RegisterServlet extends HttpServlet {
@@ -59,10 +58,8 @@ public class RegisterServlet extends HttpServlet {
           request.setAttribute("error", "El usuario ya está en uso.");
           request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }
-      } catch (ApplicationException e) {
-        e.printStackTrace();
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new ServletException(e.getMessage());
       }
     }
   }

@@ -12,7 +12,7 @@ public class DataCategory implements Serializable {
 
   public DataCategory() {}
 
-  public ArrayList<Category> getAllWithSubcategories() throws Exception {
+  public ArrayList<Category> getAllWithSubcategories() throws ApplicationException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		PreparedStatement substmt = null;
@@ -45,26 +45,23 @@ public class DataCategory implements Serializable {
 				}
 			}
 		} catch (SQLException e) {
-			throw e;
-		} catch (ApplicationException ae){
-			throw ae;
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		} finally {
+			try {
+				if (rs!=null) rs.close();
+				if (stmt!=null) stmt.close();
+				if (subrs!=null) rs.close();
+				if (substmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			if (subrs!=null) rs.close();
-			if (substmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
 		return categories;
 	}
 
-	public Category getById(Integer categoryId) throws SQLException, ApplicationException {
+	public Category getById(Integer categoryId) throws ApplicationException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Category category = new Category();
@@ -80,20 +77,20 @@ public class DataCategory implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+			try {
+				if (rs!=null) rs.close();
+				if (stmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
 
 		return category;
 	}
 
-	public void create(Category category) throws SQLException, ApplicationException {
+	public void create(Category category) throws ApplicationException {
 		ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
@@ -113,7 +110,7 @@ public class DataCategory implements Serializable {
     }
 	}
 
-	public void update(Category category) throws SQLException, ApplicationException {
+	public void update(Category category) throws ApplicationException {
 		PreparedStatement stmt = null;
     try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement("UPDATE classified_ads.category SET name=? WHERE id=?");
@@ -135,7 +132,7 @@ public class DataCategory implements Serializable {
     }
 	}
 
-	public void delete(Integer categoryId) throws SQLException, ApplicationException {
+	public void delete(Integer categoryId) throws ApplicationException {
     PreparedStatement stmt = null;
 		try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement("DELETE FROM classified_ads.category WHERE id=?");
@@ -146,13 +143,13 @@ public class DataCategory implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+			try {
+				if (stmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
   }
 }

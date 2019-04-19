@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/profile", "/profile.jsp"})
 public class ProfileServlet extends HttpServlet {
@@ -32,7 +31,7 @@ public class ProfileServlet extends HttpServlet {
         request.setAttribute("ads", ads);
         request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new ServletException(e.getMessage());
       }
     } else {
       response.sendRedirect("/login.jsp");

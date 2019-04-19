@@ -13,7 +13,7 @@ public class DataComment implements Serializable {
 
   public DataComment() {}
 
-  public ArrayList<Comment> getAllByAdId(Integer adId) throws SQLException, ApplicationException {
+  public ArrayList<Comment> getAllByAdId(Integer adId) throws ApplicationException {
     PreparedStatement stmt = null;
 		ResultSet rs = null;
 		ArrayList<Comment> comments = new ArrayList<Comment>();
@@ -43,15 +43,15 @@ public class DataComment implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
-		}
+		} finally {
+      try {
+        if (rs!=null) rs.close();
+        if (stmt!=null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+      }
+    }
 
 		return comments;
   }
@@ -74,19 +74,14 @@ public class DataComment implements Serializable {
         comment.setId(rs.getInt(1));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new ApplicationException(e, "Hubo un error al intentar crear el aviso.");
-    } catch (ApplicationException e) {
-      e.printStackTrace();
     } finally {
       try {
         if (rs != null) rs.close();
         if (stmt != null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
-      } catch (ApplicationException e) {
-        e.printStackTrace();
       } catch (SQLException e) {
-        e.printStackTrace();
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
       }
     }
     return comment;

@@ -18,11 +18,9 @@ import javax.servlet.http.Part;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
 import com.uploadcare.api.Client;
 import com.uploadcare.upload.FileUploader;
 import com.uploadcare.upload.Uploader;
-import com.uploadcare.upload.UploadFailureException;
 
 @MultipartConfig()
 @WebServlet(urlPatterns = { "/sell", "/sell.jsp" })
@@ -90,7 +88,7 @@ public class SellServlet extends HttpServlet {
           // Image upload
           String image = "";
           Part filePart = request.getPart("image");
-          if (filePart.getSize() != 0) {
+          if (filePart != null && filePart.getSize() != 0) {
             String fileName = getSubmittedFileName(filePart);
             InputStream fileContent = filePart.getInputStream();
             byte[] buffer = new byte[fileContent.available()];
@@ -98,10 +96,11 @@ public class SellServlet extends HttpServlet {
             File targetFile = File.createTempFile(fileName, ".jpg");
             OutputStream outStream = new FileOutputStream(targetFile);
             outStream.write(buffer);
-            Client client = new Client("ce0c630573163927235e", "25907025b19c9fcf77ea");
+            Client client = new Client("***", "***");
             Uploader uploader = new FileUploader(client, targetFile);
             com.uploadcare.api.File file = uploader.upload().save();
             image = file.getOriginalFileUrl().toString();
+            outStream.close();
           }
 
           Ad ad = new Ad();
@@ -129,7 +128,7 @@ public class SellServlet extends HttpServlet {
             ad = adController.createAd(ad);
           }
           response.sendRedirect("/ad.jsp?id=" + ad.getId());
-        } catch (ApplicationException | UploadFailureException e) {
+        } catch (Exception e) {
           throw new ServletException(e.getMessage());
         }
       }

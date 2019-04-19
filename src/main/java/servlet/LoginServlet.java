@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/login", "/login.jsp"})
 public class LoginServlet extends HttpServlet {
@@ -54,10 +53,8 @@ public class LoginServlet extends HttpServlet {
           request.setAttribute("error", "Usuario o contraseña inválidos.");
           request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
         }
-      } catch (ApplicationException e) {
-        e.printStackTrace();
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new ServletException(e.getMessage());
       }
     }
   }

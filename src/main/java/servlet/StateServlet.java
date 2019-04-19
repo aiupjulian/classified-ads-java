@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
 
 @MultipartConfig()
 @WebServlet(urlPatterns = { "/state", "/state.jsp" })

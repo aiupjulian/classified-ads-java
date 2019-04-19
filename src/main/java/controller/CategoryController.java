@@ -13,23 +13,23 @@ public class CategoryController {
 		dataCategory = new DataCategory();
 	}
 
-	public ArrayList<Category> getAllWithSubcategories() throws Exception, ApplicationException {
+	public ArrayList<Category> getAllWithSubcategories() throws ApplicationException {
 		return dataCategory.getAllWithSubcategories();
 	}
 
-	public Category getById(Integer categoryId) throws Exception {
+	public Category getById(Integer categoryId) throws ApplicationException {
 		return dataCategory.getById(categoryId);
 	}
 
-	public void create(Category category) throws Exception {
+	public void create(Category category) throws ApplicationException {
 		dataCategory.create(category);
 	}
 
-	public void update(Category category) throws Exception {
+	public void update(Category category) throws ApplicationException {
 		dataCategory.update(category);
 	}
 
-	public void delete(Integer categoryId) throws Exception {
+	public void delete(Integer categoryId) throws ApplicationException {
 		dataCategory.delete(categoryId);
 	}
 }

@@ -14,7 +14,7 @@ public class DataAd implements Serializable {
 
   public DataAd() {}
 
-  public Ad getById(Integer adId) throws SQLException, ApplicationException {
+  public Ad getById(Integer adId) throws ApplicationException {
     PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Ad ad = new Ad();
@@ -54,20 +54,20 @@ public class DataAd implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
-		}
+		} finally {
+      try {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+      }
+    }
 
 		return ad;
   }
 
-  public ArrayList<Ad> getAllByUser(Integer userId) throws SQLException, ApplicationException {
+  public ArrayList<Ad> getAllByUser(Integer userId) throws ApplicationException {
     PreparedStatement stmt = null;
 		ResultSet rs = null;
 		ArrayList<Ad> ads = new ArrayList<Ad>();
@@ -109,15 +109,15 @@ public class DataAd implements Serializable {
 			}
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
-		}
+		} finally {
+      try {
+        if (rs!=null) rs.close();
+        if (stmt!=null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+      }
+    }
 
 		return ads;
   }
@@ -190,16 +190,15 @@ public class DataAd implements Serializable {
         }
 			}
 		} catch (SQLException e) {
-      e.printStackTrace();
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+      try {
+        if (rs!=null) rs.close();
+        if (stmt!=null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+      }
     }
     
     DataAdsPages dataAdsPages = new DataAdsPages(ads, pages);
@@ -207,12 +206,10 @@ public class DataAd implements Serializable {
 		return dataAdsPages;
   }
 
-  public void delete(Integer adId) throws SQLException, ApplicationException {
+  public void delete(Integer adId) throws ApplicationException {
     PreparedStatement stmt = null;
 		try {
-      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-        "DELETE FROM classified_ads.ad WHERE id=?"
-      );
+      stmt = FactoryConnection.getInstance().getConn().prepareStatement("DELETE FROM classified_ads.ad WHERE id=?");
       stmt.setInt(1, adId);
       Boolean success = stmt.executeUpdate() != 0;
       if (!success) {
@@ -220,17 +217,17 @@ public class DataAd implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
-		}
+		} finally {
+      try {
+        if (stmt!=null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+      }
+    }
   }
 
-  public void markAsSold(Integer adId, Integer userId) throws SQLException, ApplicationException {
+  public void markAsSold(Integer adId, Integer userId) throws ApplicationException {
     PreparedStatement stmt = null;
 		try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
@@ -244,14 +241,14 @@ public class DataAd implements Serializable {
       }
     } catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (stmt != null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
-		}
+		} finally {
+      try {
+        if (stmt != null) stmt.close();
+        FactoryConnection.getInstance().releaseConn();
+      } catch (SQLException e) {
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+      }
+    }
   }
 
   public Ad createAd(Ad ad) throws ApplicationException {
@@ -276,19 +273,14 @@ public class DataAd implements Serializable {
         ad.setId(rs.getInt(1));
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new ApplicationException(e, "Hubo un error al intentar crear el aviso.");
-    } catch (ApplicationException e) {
-      e.printStackTrace();
     } finally {
       try {
         if (rs != null) rs.close();
         if (stmt != null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
-      } catch (ApplicationException e) {
-        e.printStackTrace();
       } catch (SQLException e) {
-        e.printStackTrace();
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
       }
     }
     return ad;
@@ -299,40 +291,33 @@ public class DataAd implements Serializable {
     try {
       if (ad.getImage() != null && ad.getImage() != "") {
         stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-          "UPDATE classified_ads.ad SET name=?, description=?, price=?, date=?, user_id=?, city_id=?, subcategory_id=?, image=? WHERE ?"
+          "UPDATE classified_ads.ad SET name=?, description=?, price=?, city_id=?, subcategory_id=?, image=? WHERE id=?"
         );
-        stmt.setString(9, ad.getImage());
+        stmt.setString(6, ad.getImage());
+        stmt.setInt(7, ad.getId());
       } else {
         stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-          "UPDATE classified_ads.ad SET name=?, description=?, price=?, date=?, user_id=?, city_id=?, subcategory_id=? WHERE ?"
+          "UPDATE classified_ads.ad SET name=?, description=?, price=?, city_id=?, subcategory_id=? WHERE id=?"
         );
+        stmt.setInt(6, ad.getId());
       }
-      
       stmt.setString(1, ad.getName());
       stmt.setString(2, ad.getDescription());
       stmt.setInt(3, ad.getPrice());
-      stmt.setString(4, ad.getDate());
-      stmt.setInt(5, ad.getUser().getId());
-      stmt.setInt(6, ad.getCity().getId());
-      stmt.setInt(7, ad.getSubcategory().getId());
-      stmt.setInt(8, ad.getId());
+      stmt.setInt(4, ad.getCity().getId());
+      stmt.setInt(5, ad.getSubcategory().getId());
       Boolean success = stmt.executeUpdate() != 0;
       if (!success) {
         throw new ApplicationException("No se encontró el aviso a editar.");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new ApplicationException(e, "Hubo un error al intentar editar el aviso.");
-    } catch (ApplicationException e) {
-      e.printStackTrace();
     } finally {
       try {
         if (stmt != null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
-      } catch (ApplicationException e) {
-        e.printStackTrace();
       } catch (SQLException e) {
-        e.printStackTrace();
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
       }
     }
     return ad;

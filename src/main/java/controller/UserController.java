@@ -12,7 +12,7 @@ public class UserController {
 		dataUser = new DataUser();
 	}
 
-	public User validateUser(String username, String password) throws Exception, ApplicationException {
+	public User validateUser(String username, String password) throws ApplicationException {
 		User user = dataUser.getByUsername(username);
 		if (user != null && BCrypt.checkpw(password, user.getPassword())) {
 			return user;
@@ -21,7 +21,7 @@ public class UserController {
 		}
 	}
 
-	public User registerUser(User user) throws Exception, ApplicationException {
+	public User registerUser(User user) throws ApplicationException {
 		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 		return dataUser.add(user);
 	}

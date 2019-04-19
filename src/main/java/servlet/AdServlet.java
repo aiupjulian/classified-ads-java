@@ -16,13 +16,12 @@ import javax.servlet.http.HttpSession;
 
 import entity.*;
 import controller.*;
-import util.*;
 
 @WebServlet(urlPatterns = { "/ad", "/ad.jsp" })
 public class AdServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  private static String USER_NAME = "classifiedadsml";
-  private static String PASSWORD = "Lima-Limon505";
+  private static String USER_NAME = "***";
+  private static String PASSWORD = "***";
 
   public AdServlet() {
     super();
@@ -39,7 +38,7 @@ public class AdServlet extends HttpServlet {
       request.setAttribute("comments", comments);
       request.getRequestDispatcher("/WEB-INF/jsp/ad.jsp").forward(request, response);
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ServletException(e.getMessage());
     }
   }
 
@@ -84,12 +83,13 @@ public class AdServlet extends HttpServlet {
           }
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new ServletException(e.getMessage());
       }
     }
   }
 
-  private static void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
+  private static void sendFromGMail(String from, String pass, String[] to, String subject, String body)
+      throws AddressException, MessagingException {
     Properties props = System.getProperties();
     String host = "smtp.gmail.com";
     props.put("mail.smtp.starttls.enable", "true");
@@ -101,32 +101,23 @@ public class AdServlet extends HttpServlet {
 
     Session session = Session.getDefaultInstance(props);
     MimeMessage message = new MimeMessage(session);
+    message.setFrom(new InternetAddress(from));
+    InternetAddress[] toAddress = new InternetAddress[to.length];
 
-    try {
-        message.setFrom(new InternetAddress(from));
-        InternetAddress[] toAddress = new InternetAddress[to.length];
-
-        // To get the array of addresses
-        for( int i = 0; i < to.length; i++ ) {
-            toAddress[i] = new InternetAddress(to[i]);
-        }
-
-        for( int i = 0; i < toAddress.length; i++) {
-            message.addRecipient(Message.RecipientType.TO, toAddress[i]);
-        }
-
-        message.setSubject(subject);
-        message.setText(body);
-        Transport transport = session.getTransport("smtp");
-        transport.connect(host, from, pass);
-        transport.sendMessage(message, message.getAllRecipients());
-        transport.close();
+    // To get the array of addresses
+    for( int i = 0; i < to.length; i++ ) {
+        toAddress[i] = new InternetAddress(to[i]);
     }
-    catch (AddressException ae) {
-        ae.printStackTrace();
+
+    for( int i = 0; i < toAddress.length; i++) {
+        message.addRecipient(Message.RecipientType.TO, toAddress[i]);
     }
-    catch (MessagingException me) {
-        me.printStackTrace();
-    }
+
+    message.setSubject(subject);
+    message.setText(body);
+    Transport transport = session.getTransport("smtp");
+    transport.connect(host, from, pass);
+    transport.sendMessage(message, message.getAllRecipients());
+    transport.close();
   }
 }

@@ -12,7 +12,7 @@ public class DataCity implements Serializable {
 
   public DataCity() {}
 
-  public ArrayList<City> getAll() throws Exception {
+  public ArrayList<City> getAll() throws ApplicationException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		ArrayList<City> cities = new ArrayList<City>();
@@ -36,23 +36,21 @@ public class DataCity implements Serializable {
 				}
 			}
 		} catch (SQLException e) {
-			throw e;
-		} catch (ApplicationException ae){
-			throw ae;
-		}
-
-		try {
-			if (rs != null) rs.close();
-			if (stmt != null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
 
 		return cities;
 	}
 
-	public City getById(Integer cityId) throws SQLException, ApplicationException {
+	public City getById(Integer cityId) throws ApplicationException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		City city = new City();
@@ -77,20 +75,20 @@ public class DataCity implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (rs!=null) rs.close();
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+			try {
+				if (rs!=null) rs.close();
+				if (stmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
 
 		return city;
 	}
 
-	public void create(City city) throws SQLException, ApplicationException {
+	public void create(City city) throws ApplicationException {
 		ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
@@ -113,7 +111,7 @@ public class DataCity implements Serializable {
     }
 	}
 
-	public void update(City city) throws SQLException, ApplicationException {
+	public void update(City city) throws ApplicationException {
 		PreparedStatement stmt = null;
     try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement(
@@ -138,7 +136,7 @@ public class DataCity implements Serializable {
     }
 	}
 
-	public void delete(Integer cityId) throws SQLException, ApplicationException {
+	public void delete(Integer cityId) throws ApplicationException {
     PreparedStatement stmt = null;
 		try {
       stmt = FactoryConnection.getInstance().getConn().prepareStatement("DELETE FROM classified_ads.city WHERE id=?");
@@ -149,13 +147,13 @@ public class DataCity implements Serializable {
       }
 		} catch (SQLException e) {
 			throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
-		}
-
-		try {
-			if (stmt!=null) stmt.close();
-			FactoryConnection.getInstance().releaseConn();
-		} catch (SQLException e) {
-			throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+		} finally {
+			try {
+				if (stmt!=null) stmt.close();
+				FactoryConnection.getInstance().releaseConn();
+			} catch (SQLException e) {
+				throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
+			}
 		}
   }
 }

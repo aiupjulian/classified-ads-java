@@ -13,23 +13,23 @@ public class StateController {
 		dataState = new DataState();
 	}
 
-	public ArrayList<State> getAllWithCities() throws Exception {
+	public ArrayList<State> getAllWithCities() throws ApplicationException {
 		return dataState.getAllWithCities();
 	}
 
-	public State getById(Integer stateId) throws Exception {
+	public State getById(Integer stateId) throws ApplicationException {
 		return dataState.getById(stateId);
 	}
 
-	public void create(State state) throws Exception {
+	public void create(State state) throws ApplicationException {
 		dataState.create(state);
 	}
 
-	public void update(State state) throws Exception {
+	public void update(State state) throws ApplicationException {
 		dataState.update(state);
 	}
 
-	public void delete(Integer stateId) throws Exception {
+	public void delete(Integer stateId) throws ApplicationException {
 		dataState.delete(stateId);
 	}
 }

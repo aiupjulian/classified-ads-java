@@ -23,7 +23,7 @@ public class AdController {
 		return dataAd.updateAd(ad);
 	}
 
-	public ArrayList<Ad> getAllByUser(Integer userId) throws SQLException, ApplicationException {
+	public ArrayList<Ad> getAllByUser(Integer userId) throws ApplicationException {
 		return dataAd.getAllByUser(userId);
 	}
 
@@ -31,11 +31,11 @@ public class AdController {
 		return dataAd.getAllByQuery(queryMap);
 	}
 
-	public Ad getById(Integer adId) throws SQLException, ApplicationException {
+	public Ad getById(Integer adId) throws ApplicationException {
 		return dataAd.getById(adId);
 	}
 
-	public void delete(Integer adId, User user) throws SQLException, ApplicationException {
+	public void delete(Integer adId, User user) throws ApplicationException {
 		if (user.getAdmin()) {
 			dataAd.delete(adId);
 		} else {

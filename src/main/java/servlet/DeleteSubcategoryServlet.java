@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import controller.*;
 import entity.*;
-import util.ApplicationException;
 
 @WebServlet(urlPatterns = {"/deleteSubcategory", "/deleteSubcategory.jsp"})
 public class DeleteSubcategoryServlet extends HttpServlet {

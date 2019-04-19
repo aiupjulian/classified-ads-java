@@ -1,9 +1,7 @@
 package data;
 
-import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.*;
-import org.mindrot.jbcrypt.BCrypt;
 
 import entity.User;
 import util.ApplicationException;
@@ -13,7 +11,7 @@ public class DataUser implements Serializable {
 
   public DataUser() {}
 
-  public User getByUsername(String username) throws Exception {
+  public User getByUsername(String username) throws ApplicationException {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     User user = null;
@@ -32,16 +30,14 @@ public class DataUser implements Serializable {
         user.setAdmin(rs.getBoolean("admin"));
       }
     } catch (SQLException e) {
-      throw e;
-    } catch (ApplicationException ae){
-      throw ae;
+      throw new ApplicationException(e, "Ocurrió un error al consultar la base de datos.");
     } finally {
       try {
         if (rs!=null) rs.close();
         if (stmt!=null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
       } catch (SQLException e) {
-        throw e;
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
       }
     }
     return user;
@@ -51,34 +47,33 @@ public class DataUser implements Serializable {
     ResultSet rs = null;
     PreparedStatement stmt = null;
     try {
-      stmt = FactoryConnection.getInstance().getConn().prepareStatement(
-        "INSERT INTO classified_ads.user (username, password, name, phone, email) VALUES (?, ?, ?, ?, ?) RETURNING id"
-      );
-      stmt.setString(1, user.getUsername());
-      stmt.setString(2, user.getPassword());
-      stmt.setString(3, user.getName());
-      stmt.setString(4, user.getPhone());
-      stmt.setString(5, user.getEmail());
-      rs = stmt.executeQuery();
-      if (rs != null && rs.next()) {
-        user.setId(rs.getInt(1));
+      boolean userAlreadyExists = getByUsername(user.getUsername()) != null;
+      if (userAlreadyExists) {
+        user = null;
       } else {
-        throw new ApplicationException("El usuario ya está en uso.??????");
+        stmt = FactoryConnection.getInstance().getConn().prepareStatement(
+          "INSERT INTO classified_ads.user (username, password, name, phone, email) VALUES (?, ?, ?, ?, ?) RETURNING id"
+        );
+        stmt.setString(1, user.getUsername());
+        stmt.setString(2, user.getPassword());
+        stmt.setString(3, user.getName());
+        stmt.setString(4, user.getPhone());
+        stmt.setString(5, user.getEmail());
+        rs = stmt.executeQuery();
+        if (rs != null && rs.next()) {
+          user.setId(rs.getInt(1));
+          user.setAdmin(false);
+        }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new ApplicationException(e, "Hubo un error al intentar crear el usuario.");
-    } catch (ApplicationException e) {
-      e.printStackTrace();
     } finally {
       try {
         if (rs != null) rs.close();
         if (stmt != null) stmt.close();
         FactoryConnection.getInstance().releaseConn();
-      } catch (ApplicationException e) {
-        e.printStackTrace();
       } catch (SQLException e) {
-        e.printStackTrace();
+        throw new ApplicationException(e, "Ocurrió un error al cerrar la conexión con la base de datos.");
       }
     }
     return user;

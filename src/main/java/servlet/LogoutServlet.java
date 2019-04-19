@@ -8,10 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import controller.*;
-import entity.*;
-import util.ApplicationException;
-
 @WebServlet(urlPatterns = {"/logout", "/logout.jsp"})
 public class LogoutServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
